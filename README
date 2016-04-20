@@ -51,3 +51,4 @@ Run .lua files:
 th <filename>.lua
 
 Run Torch interpreter
+$ th
