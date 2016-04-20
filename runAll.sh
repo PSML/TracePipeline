@@ -1,20 +1,23 @@
 #!/bin/bash
 
 #Load modules on SCC
-. ./prep_torch
+echo . ./prep_torch
 
 #Data comes as compressed bmps. Turn it into uncompressed pngs.
 cd data
-./cleanup.sh
-./genpng.sh 
+echo in data/
+echo ./cleanup.sh
+echo ./genpng.sh 
 cd ..
 
 #Produce torch compatible input table.
 cd process
+echo in process/
 ./process.sh
 cd ..
 
 #Build, train and test model.
 cd recVsForExpt
-./runexpt.sh
+echo in recVsForExpt
+./runExpt.sh
 cd ..
