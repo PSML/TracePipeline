@@ -1,5 +1,5 @@
 #!/bin/bash
 
+echo "Turns 2 directories of pngs into a training and test set."
+th genTorchTable.lua
 
-echo "turns 2 directories of pngs into a tensor."
-#th genTorchTable.lua

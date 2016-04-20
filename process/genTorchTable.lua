@@ -12,5 +12,61 @@ sp:5,1
 sr:6,1
 memory:8,65536
 For this reason we will truncate the last 8 cols. 
+To Do: Pull out magic numbers.
 --]]
+torch.seed();
+recPath = '../data/recCountpngs/';
+forPath = '../data/forCountpngs/';
+recTmp   = {}; --Holds all records of rec.
+forTmp   = {}; --Holds all records of for.
+
+require 'paths';
+require 'image';
+
+--Recursive count traces.
+for f in paths.iterfiles( recPath ) do
+   --Image loads in as 3d tensor. This selects out the 2 useful dimensions.
+   --Then removes the final 8 elements and truncates it to 500 elements. 
+   recTmp[#recTmp+1] = image.load(recPath..f):select(1,1):sub( 1,500 , 1,56 );
+end
+
+--For loop count traces.
+for f in paths.iterfiles( forPath ) do
+   forTmp[#forTmp+1] = image.load(forPath..f):select(1,1):sub( 1,500 , 1,56 );
+end
+
+--The training set.
+outputTrain = {};
+--The testing set.
+outputTest  = {};
+
+--Fill out Training and testing sets with rec data.
+for i = 1,#recTmp do 
+   if torch.uniform() < 0.8 
+   then
+      outputTrain[ #outputTrain+1] = { recTmp[i] , 1 }; --Provide trace and label, 1
+   else
+      outputTest[ #outputTest+1] = { recTmp[i] , 1  };
+   end
+end
+
+--Fill out Training and testing sets with for data.
+for i = 1,#forTmp do 
+   if torch.uniform() < 0.8 
+   then
+      outputTrain[ #outputTrain+1] = { forTmp[i] , 2 }; --Provide trace and label, 1
+   else
+      outputTest[ #outputTest+1] = { forTmp[i] , 2  };
+   end
+end
+
+print("output Train:");
+print(#outputTrain);
+--print( outputTrain  );
+print("output Test:");
+--print( outputTest  );
+print(#outputTest);
+
+torch.save("outputTrainTable", outputTrain);
+torch.save("outputTestTable", outputTest);
 

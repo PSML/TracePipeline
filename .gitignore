@@ -2,12 +2,20 @@ Tmp files.
 *~
 
 Backup files.
-#*
+\#*
 
-Dir for expanded bmps
+#Dir for expanded bmps
 data/forcountbmps
 data/recCountbmps
 forCountpngs/
 recCountpngs/
 bmps
 *.bmp
+*.png
+
+#process
+outputTestTable
+outputTrainTable
+
+#net
+the_mlp_net
