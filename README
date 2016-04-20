@@ -44,7 +44,7 @@ http://www.bu.edu/tech/support/research/software-and-programming/programming/mul
 Grab an interactive session with a GPU.
 $ qrsh -l h_rt=4:00:00 -l gpus=1
 
-Import necessary modules into current envt. 
+Import necessary modules into current envt. The . is intentional.
 . ./prep_torch
 
 Run .lua files:
