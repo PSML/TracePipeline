@@ -1,1 +1,2 @@
-rm -rf forcountbmps recCountbmps recCountpngs forCountpngs
+rm -rf recCountpngs forCountpngs
+
