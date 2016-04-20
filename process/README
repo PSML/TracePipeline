@@ -1,0 +1,1 @@
+This will contain code for manipulating bmps into torch friendly tables, which can be fed directly into nns. 
