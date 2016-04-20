@@ -1,1 +1,12 @@
+Tmp files.
 *~
+
+Backup files.
+#*
+
+Dir for expanded bmps
+data/forcountbmps
+data/recCountbmps
+
+bmps
+*.bmp
