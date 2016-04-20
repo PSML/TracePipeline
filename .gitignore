@@ -7,6 +7,7 @@ Backup files.
 Dir for expanded bmps
 data/forcountbmps
 data/recCountbmps
-
+forCountpngs/
+recCountpngs/
 bmps
 *.bmp
