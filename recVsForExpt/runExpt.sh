@@ -1,5 +1,8 @@
 #!/bin/bash
 
-echo "th genNet.lua: NYI"
-echo "th trainNet.lua: NYI"
-echo "th testNet.lua: NYI"
+echo Generating network.
+th genNet.lua
+echo Training network.
+th trainNet.lua
+echo Testing network.
+th testNet.lua

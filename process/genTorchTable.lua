@@ -27,12 +27,15 @@ require 'image';
 for f in paths.iterfiles( recPath ) do
    --Image loads in as 3d tensor. This selects out the 2 useful dimensions.
    --Then removes the final 8 elements and truncates it to 500 elements. 
-   recTmp[#recTmp+1] = image.load(recPath..f):select(1,1):sub( 1,500 , 1,56 );
+   recT  = image.load(recPath..f):select(1,1):sub( 1,500 , 1,56 );
+   --Then flattens image to 1d.
+   recTmp[#recTmp+1] = recT:resize( (#recT)[1] * (#recT)[2] );
 end
 
 --For loop count traces.
 for f in paths.iterfiles( forPath ) do
-   forTmp[#forTmp+1] = image.load(forPath..f):select(1,1):sub( 1,500 , 1,56 );
+   forT = image.load(forPath..f):select(1,1):sub( 1,500 , 1,56 );
+   forTmp[#forTmp+1] = forT:resize( (#forT)[1] * (#forT)[2] );
 end
 
 --The training set.
@@ -64,8 +67,8 @@ print("output Train:");
 print(#outputTrain);
 --print( outputTrain  );
 print("output Test:");
---print( outputTest  );
 print(#outputTest);
+--print( outputTest  );
 
 torch.save("outputTrainTable", outputTrain);
 torch.save("outputTestTable", outputTest);

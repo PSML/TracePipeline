@@ -5,8 +5,8 @@ processPath = "../process/";
 --The datasets.
 trainTable = torch.load( processPath.."outputTrainTable" );
 
+--Need to provide this function for training. 
 function trainTable:size() return #trainTable end
-
 
 --This is the loss function, MSE.
 criterion = nn.ClassNLLCriterion();
@@ -17,8 +17,6 @@ trainer = nn.StochasticGradient(mlp, criterion);
 --trainer.maxIteration = 100
 
 --Train, does 25 rounds by default
-print("about to start training");
-print("using net");
-print(mlp);
 trainer:train(trainTable);
 
+torch.save("trained_mlp_net", mlp)

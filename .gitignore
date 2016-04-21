@@ -19,3 +19,4 @@ outputTrainTable
 
 #net
 the_mlp_net
+trained_mlp_net

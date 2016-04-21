@@ -43,6 +43,7 @@ trainer = nn.StochasticGradient(mlp, criterion)
 --trainer.maxIteration = 100
 
 --Train, does 25 rounds by default
+print(dataset)
 trainer:train(dataset);
 
 --Checks performance
