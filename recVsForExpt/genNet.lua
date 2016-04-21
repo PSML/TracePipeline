@@ -5,7 +5,6 @@ https://github.com/torch/nn/blob/master/doc/training.md.
 processPath = "../process/";
 --The datasets.
 trainTable = torch.load( processPath.."outputTrainTable" );
-testTable  = torch.load( processPath.."outputTestTable"  );
 
 require "nn"
 -- make a multi-layer perceptron
@@ -16,11 +15,12 @@ I\'m not sure this is good form. This assumes all traces have the same dimension
 --]]
 
 inputs = (#trainTable[1][1])[1] * (#trainTable[1][1])[2]; 
-outputs = 1; HUs = 20; 
+classes = 2; HUs = 20; 
 
 mlp:add(nn.Linear(inputs, HUs))
 mlp:add(nn.Tanh()) --The crucial nonlinearity 
-mlp:add(nn.Linear(HUs, outputs))
+mlp:add(nn.Linear(HUs, classes))
+mlp:add(nn.LogSoftMax())
 
 
 torch.save("the_mlp_net", mlp);

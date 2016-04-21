@@ -1,2 +1,5 @@
 Excellent documentation for torch's nn module:
 https://github.com/torch/nn/tree/master/doc
+
+Great softmax hello world:
+http://mdtux89.github.io/2015/12/11/torch-tutorial.html
