@@ -63,6 +63,9 @@ for i = 1,#forTmp do
    end
 end
 
+function outputTrain:size() return #outputTrain end
+function outputTest:size()  return #outputTest  end
+
 print("output Train:");
 print(#outputTrain);
 --print( outputTrain  );

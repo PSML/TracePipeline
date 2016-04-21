@@ -3,3 +3,9 @@ https://github.com/torch/nn/tree/master/doc
 
 Great softmax hello world:
 http://mdtux89.github.io/2015/12/11/torch-tutorial.html
+
+LSTM, RNN
+http://kbullaughey.github.io/lstm-play/2015/09/21/torch-and-gpu.html
+
+Training on GPUs
+https://github.com/clementfarabet/ipam-tutorials/tree/master/th_tutorials/4_morestuff
