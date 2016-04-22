@@ -2,11 +2,11 @@
 Modified from:
 https://github.com/torch/nn/blob/master/doc/training.md. 
 --]]
-processPath = "../process/";
+processPath = "../../process/";
 --The datasets.
 trainTable = torch.load( processPath.."outputTrainTable" );
 
-require "nn"
+require "cunn"
 -- make a multi-layer perceptron
 mlp = nn.Sequential();  
 
@@ -24,7 +24,8 @@ mlp:add(nn.Linear(inputs , HUs))
 mlp:add(nn.Tanh()) --The crucial nonlinearity 
 mlp:add(nn.Linear(HUs, classes))
 mlp:add(nn.LogSoftMax())
-
+--Move to gpu
+mlp:cuda();
 print(mlp);
 
-torch.save("the_mlp_net", mlp);
+torch.save("the_mlp_net_GPU", mlp);

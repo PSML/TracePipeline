@@ -1,5 +1,5 @@
 require 'nn';
-processPath = "../process/";
+processPath = "../../process/";
 --The train dataset.
 testTable  = torch.load( processPath.."outputTestTable"  );
 --The trained net.

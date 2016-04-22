@@ -1,8 +1,8 @@
 #!/bin/bash
 
 echo Generating network.
-th genNetGPU.lua
+th genNet.lua
 echo Training network.
-th trainNetGPU.lua
+th trainNet.lua
 echo Testing network.
 th testNet.lua

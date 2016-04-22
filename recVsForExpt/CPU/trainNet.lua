@@ -1,7 +1,7 @@
 require 'nn';
 --The net.
 mlp = torch.load("the_mlp_net");
-processPath = "../process/";
+processPath = "../../process/";
 --The datasets.
 trainTable = torch.load( processPath.."outputTrainTable" );
 

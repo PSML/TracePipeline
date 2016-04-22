@@ -47,6 +47,10 @@ $ qrsh -l h_rt=4:00:00 -l gpus=1
 Import necessary modules into current envt. The . is intentional.
 . ./prep_torch
 
+The entire experiment (Prepairing data, processing, generating, training, testing model) can be run from the top level with:
+./runAll.sh
+
+
 Run .lua files:
 th <filename>.lua
 
