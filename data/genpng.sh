@@ -1,20 +1,17 @@
 #!/bin/bash
 
-cd compressedData
-tar -vxjf recCountbmps.tar.bz2
-tar -vxjf forCountbmps.tar.bz2
+cd compressedDataCINC
+tar -vxjf incBmps3.tar.bz2
 
-mogrify -format png recCountbmps/*
-mogrify -format png forcountbmps/*
+mogrify -format png cBmps3/*
 
-mkdir ../recCountpngs
-mkdir ../forCountpngs
+mkdir ../cINCpngs
+#Think this is broken
+mv cBmps3/*.png ../cINCpngs
 
-mv recCountbmps/*.png ../recCountpngs
-mv forcountbmps/*.png ../forCountpngs
+#rm -rf cINCbmps
 
-rm -rf recCountbmps
-rm -rf forcountbmps
+exit
 
 cd ../compressedDataINC
 tar -vxjf incBmps.tar.bz2

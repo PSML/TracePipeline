@@ -22,3 +22,15 @@ Count from START to START+9 using recursion.
 
 *Note that the compile line included definitions for START and MAX, eg.:
 ../../../../ext/install/bin/cc65 -D START=$K -D MAX=$[K+10] -D__6502__ -t none --cpu 6502 forCount.c -o intermed/forCount_${K}.s
+
+#!/bin/bash                                                                                                                                                                                                                 
+
+for i in $(ls);
+do
+    k=$(echo $i | sed 's/0_inc/_inc/')
+
+
+    g=$(echo $i | cut -d '_' -f 4)
+
+    mv $i $g$k
+done

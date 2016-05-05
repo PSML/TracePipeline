@@ -15,7 +15,8 @@ For this reason we will truncate the last 8 cols.
 To Do: Pull out magic numbers.
 --]]
 torch.seed();
-recPath = '../data/incCountpngs/';
+recPath = '../data/backupCINCpngs/';
+
 --forPath = '../data/forCountpngs/';
 
 recTmp   = {}; --Holds all records of rec.
@@ -34,7 +35,7 @@ for f in paths.iterfiles( recPath ) do
 
    --Image loads in as 3d tensor. This selects out the 2 useful dimensions.
    --Then removes the final 8 elements and truncates it to 500 elements. 
-   recT  = image.load(recPath..f):select(1,1):sub( 1,17 , 1,56 );
+   recT  = image.load(recPath..f):select(1,1):sub( 1,395 , 1,56 );
    --Then flattens image to 1d.
    print("assigning file " .. f .. " the label " .. string.byte( string.sub(f, 1, 1)  )-48 );
    recTmp[#recTmp+1] = {recT:resize( (#recT)[1] * (#recT)[2] ) , string.byte( string.sub(f, 1, 1)  )-48  };

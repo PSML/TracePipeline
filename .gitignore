@@ -7,11 +7,13 @@ Backup files.
 #Dir for expanded bmps
 data/forcountbmps
 data/recCountbmps
+data
 forCountpngs/
 recCountpngs/
 bmps
 *.bmp
 *.png
+myscript.sh.*
 
 #process
 outputTestTable
