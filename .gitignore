@@ -16,8 +16,8 @@ bmps
 myscript.sh.*
 
 #process
-outputTestTable
-outputTrainTable
+#outputTestTable
+#outputTrainTable
 
 #net
 the_mlp_net
