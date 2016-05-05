@@ -8,7 +8,7 @@ on BU's Shared Computing Cluster for GPU access.
 The 6502:
 https://en.wikipedia.org/wiki/MOS_Technology_6502
 
-NN Framework: 
+#### NN Framework: 
 Torch7's nn module. 
 
 #### Dataset:
@@ -30,14 +30,15 @@ To Do: is this how they're laid out in the state trace? They are for sure laid o
 To DO: Explain 8th byte? Padding / ERR
 
 The register state is made up of 7 bytes. 
-Reg,	|     size in bytes
---- | ---
-PC,	 |    2
-Accumulator, | 1
-X index,   |  1
-Y index,   |  1
-SP,	   |  1
-Status,	   |  1
+
+| Reg | size in bytes |
+| --- | --- |
+| PC |  2 |
+| Accumulator | 1 |
+| X index |  1 |
+| Y index | 1 |
+| SP |  1 |
+| Status | 1 |
 
 
 
