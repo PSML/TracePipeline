@@ -17,7 +17,7 @@ trainer.learningRate = .005
 trainer.maxIteration = 140
 
 trainer.shuffleIndices = true;
-trainer.learningRateDecay = 0.01; --.01 not bad
+trainer.learningRateDecay = 0.005; --.01 not bad
 --Train, does 25 rounds by default
 
 

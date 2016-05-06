@@ -1,11 +1,20 @@
+#!/bin/bash
+
 cd data
 ./cleanup.sh
 cd ..
 
-cd process
-./cleanup.sh
-cd ..
+for i in $( ls | grep exp)
+do 
+    cd $i
+    ./cleanup.sh
+    cd ..
+done
 
-cd recVsForExpt
-./cleanup.sh
-cd ..
+
+for i in $( ls | grep exp)
+do 
+    cd $i
+    ./cleanup.sh
+    cd ..
+done

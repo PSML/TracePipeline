@@ -18,12 +18,16 @@ I\'m not sure this is good form. This assumes all traces have the same dimension
 
 inputs = 22120  --59584 --Fix this magic number
 --print(inputs)
-classes = 9; HUs = 10; HU2s=10;
+classes = 9; HUs = 9; HU2s=10;
 
 mlp:add(nn.Linear(inputs , HUs))
 mlp:add(nn.Tanh()) --The crucial nonlinearity 
 mlp:add(nn.Linear(HUs, HU2s))
 mlp:add(nn.Tanh()) --The crucial nonlinearity 
+--mlp:add(nn.Linear(HU2s, HU3s))
+--mlp:add(nn.Tanh()) --The crucial nonlinearity 
+
+
 mlp:add(nn.Linear(HU2s, classes))
 mlp:add(nn.LogSoftMax())
 
