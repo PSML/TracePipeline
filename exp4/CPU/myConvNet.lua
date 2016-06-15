@@ -79,16 +79,17 @@ if opt.network == '' then
       -- convolutional network 
       ------------------------------------------------------------
       -- stage 1 : mean suppresion -> filter bank -> squashing -> max pooling
-      model:add(nn.SpatialConvolutionMM(1, 32, 5, 5))
+      model:add(nn.SpatialConvolutionMM(1, 20, 8, 8, 8, 1 ))
       model:add(nn.Tanh())
-      model:add(nn.SpatialMaxPooling(3, 3, 3, 3))
+      model:add(nn.SpatialMaxPooling(1, 8, 1, 8))
       -- stage 2 : mean suppresion -> filter bank -> squashing -> max pooling
-      model:add(nn.SpatialConvolutionMM(32, 64, 5, 5))
-      model:add(nn.Tanh())
-      model:add(nn.SpatialMaxPooling(2, 2, 2, 2))
+--      model:add(nn.SpatialConvolutionMM(32, 64, 5, 5))
+--      model:add(nn.Tanh())
+--      model:add(nn.SpatialMaxPooling(2, 2, 2, 2))
       -- stage 3 : standard 2-layer MLP:
-      model:add(nn.Reshape(64*2*2))
-      model:add(nn.Linear(64*2*2, 200))
+      flat_in = 20 * 48 * 7
+      model:add(nn.Reshape(flat_in))
+      model:add(nn.Linear(flat_in, 200))
       model:add(nn.Tanh())
       model:add(nn.Linear(200, #classes))
       ------------------------------------------------------------
@@ -194,8 +195,8 @@ function train(dataset)
       local k = 1
       for i = t,math.min(t+opt.batchSize-1,dataset:size()) do
          -- load new sample
-         local sample ={ dataset.data[i][1], torch.zeros(10) }
-	 sample[2][dataset.labels[i]] = 1
+         local sample ={ dataset.data[i][1], torch.zeros(9) }
+	 sample[2][dataset.labels[i]] = 1 --one hot rep
          local input = sample[1]:clone()
          local _,target = sample[2]:clone():max(1)
          target = target:squeeze()
@@ -273,6 +274,11 @@ function train(dataset)
             momentum = opt.momentum,
             learningRateDecay = 5e-7
          }
+	 print("here")
+	 print(feval)
+--	 print(parameters)
+	 print(sgdState)
+	 error()
          optim.sgd(feval, parameters, sgdState)
       
          -- disp progress
@@ -323,7 +329,9 @@ function test(dataset)
       local k = 1
       for i = t,math.min(t+opt.batchSize-1,dataset:size()) do
          -- load new sample
-         local sample = dataset[i]
+         local sample ={ dataset.data[i][1], torch.zeros(9) }
+	 sample[2][dataset.labels[i]] = 1 --one hot rep
+--         local sample = dataset[i]
          local input = sample[1]:clone()
          local _,target = sample[2]:clone():max(1)
          target = target:squeeze()
