@@ -1,47 +1,28 @@
---Found: https://github.com/torch/demos/blob/master/train-a-digit-classifier/ 
-----------------------------------------------------------------------
--- This script shows how to train different models on the MNIST 
--- dataset, using multiple optimization techniques (SGD, LBFGS)
---
--- This script demonstrates a classical example of training 
--- well-known models (convnet, MLP, logistic regression)
--- on a 10-class classification problem. 
---
--- It illustrates several points:
--- 1/ description of the model
--- 2/ choice of a loss function (criterion) to minimize
--- 3/ creation of a dataset as a simple Lua table
--- 4/ description of training and test procedures
---
--- Clement Farabet
-----------------------------------------------------------------------
-
 require 'torch'
 require 'nn'
 require 'nnx'
 require 'optim'
 require 'image'
---require 'dataset-mnist'
 require 'pl'
 require 'paths'
-
+math.randomseed(os.time())
 ----------------------------------------------------------------------
 -- parse command-line options
 --
 local opt = lapp[[
-   -s,--save          (default "logs")      subdirectory to save logs
-   -n,--network       (default "")          reload pretrained network
-   -m,--model         (default "convnet")   type of model tor train: convnet | mlp | linear
-   -f,--full                                use the full dataset
-   -p,--plot                                plot while training
-   -o,--optimization  (default "SGD")       optimization: SGD | LBFGS 
-   -r,--learningRate  (default 0.05)        learning rate, for SGD only
-   -b,--batchSize     (default 10)          batch size
-   -m,--momentum      (default 0)           momentum, for SGD only
-   -i,--maxIter       (default 3)           maximum nb of iterations per batch, for LBFGS
-   --coefL1           (default 0)           L1 penalty on the weights
-   --coefL2           (default 0)           L2 penalty on the weights
-   -t,--threads       (default 4)           number of threads
+-s,--save          (default "logs")      subdirectory to save logs
+-n,--network       (default "")          reload pretrained network
+-m,--model         (default "convnet")   type of model tor train: convnet | mlp | linear
+-f,--full                                use the full dataset
+-p,--plot                                plot while training
+-o,--optimization  (default "SGD")       optimization: SGD | LBFGS 
+-r,--learningRate  (default 0.05)        learning rate, for SGD only
+-b,--batchSize     (default 10)          batch size
+-m,--momentum      (default 0)           momentum, for SGD only
+-i,--maxIter       (default 3)           maximum nb of iterations per batch, for LBFGS
+--coefL1           (default 0)           L1 penalty on the weights
+--coefL2           (default 0)           L2 penalty on the weights
+-t,--threads       (default 4)           number of threads
 ]]
 
 -- fix seed
@@ -65,7 +46,7 @@ end
 -- define model to train
 -- on the 10-class classification problem
 --
-classes = {'1','2','3','4','5','6','7','8','9'}
+classes = {'1', '2','3','4','5','6','7','8','9'}
 
 -- geometry: width and height of input images
 geometry = {395,56}
@@ -87,14 +68,14 @@ if opt.network == '' then
 --      model:add(nn.Tanh())
 --      model:add(nn.SpatialMaxPooling(2, 2, 2, 2))
       -- stage 3 : standard 2-layer MLP:
-      flat_in = 20 * 48 * 7
-      model:add(nn.Reshape(flat_in))
-      model:add(nn.Linear(flat_in, 200))
+      flatten = 20 * 48 * 7
+      model:add(nn.Reshape(flatten))
+      model:add(nn.Linear(flatten, 200))
       model:add(nn.Tanh())
       model:add(nn.Linear(200, #classes))
       ------------------------------------------------------------
 
-   elseif opt.model == 'mlp' then
+      elseif opt.model == 'mlp' then
       ------------------------------------------------------------
       -- regular 2-layer MLP
       ------------------------------------------------------------
@@ -104,7 +85,7 @@ if opt.network == '' then
       model:add(nn.Linear(2048,#classes))
       ------------------------------------------------------------
 
-   elseif opt.model == 'linear' then
+      elseif opt.model == 'linear' then
       ------------------------------------------------------------
       -- simple linear model: logistic regression
       ------------------------------------------------------------
@@ -126,7 +107,7 @@ end
 parameters,gradParameters = model:getParameters()
 
 -- verbose
-print('<mnist> using model:')
+print('<forExpt> using model:')
 print(model)
 
 ----------------------------------------------------------------------
@@ -136,35 +117,51 @@ model:add(nn.LogSoftMax())
 criterion = nn.ClassNLLCriterion()
 
 ----------------------------------------------------------------------
---Load prepaired tables
-train = torch.load('/Users/tu/Documents/MLProject/processExp4/outputTrainTable')
-test  = torch.load('/Users/tu/Documents/MLProject/processExp4/outputTestTable')
+-- get dataset
+function modify_table(table)
+   --randomize data, this matters a lot. 
+   --total hack, do it multiple times b/c birthday paradox
+   for j = 1, 5 do
+      for i = 1, #table do -- backwards
+          local r = math.random(i) -- select a random number between 1 and i
+          table[i], table[r] = table[r], table[i] -- swap the randomly selected item to position i
+      end
+   end
 
-trainData = {}
-testData  = {}
+    --Turn {{d1,l1}, {d2,l2} ...} into {data:{1: d1, 2: d2 ...}, labels:{1: l1, 2:l2 ...}}
+    local data = {}
+    local labels = {}
+    for i=1,#table do
+        data[i]  = table[i][1]
+        labels[i] = table[i][2]
+    end
+    local new_table = {}
+    new_table.data = data
+    new_table.labels = labels
 
---get training data
-tmpData = torch.Tensor(#train,1,geometry[1],geometry[2])
-tmpLabel = torch.ByteTensor(#train)
-for i=1, #train do
-   tmpData[i][1] = train[i][1]
-   tmpLabel[i]   = train[i][2]
+    --give a size field
+    new_table.size = function() return #new_table.labels end
+
+
+
+    --override index method to give {data, label}
+    local labelvector = torch.zeros(9)
+    local mt = {__index = function(self, index)
+        local class = self.labels[index]
+        local label = labelvector:zero()
+        label[class] = 1
+        return {self.data[index], label}
+        end
+    }
+    setmetatable(new_table, mt)
+
+    return new_table
 end
-trainData.data = tmpData
-trainData.labels = tmpLabel
 
---get testing data
-tmpData = torch.Tensor(#test,1,geometry[1],geometry[2])
-tmpLabel = torch.ByteTensor(#test)
-for i=1, #test do
-   tmpData[i][1] = test[i][1]
-   tmpLabel[i]   = test[i][2]
-end
-testData.data = tmpData
-testData.labels = tmpLabel
+trainData = modify_table(torch.load('/Users/tu/Documents/MLProject/processExp4/outputTrainTable'))
 
-function trainData:size() return trainData.labels:size(1) end
-function testData:size() return testData.labels:size(1) end
+testData  = modify_table(torch.load('/Users/tu/Documents/MLProject/processExp4/outputTestTable'))
+
 
 ----------------------------------------------------------------------
 -- define training and testing functions
@@ -188,6 +185,7 @@ function train(dataset)
    -- do one epoch
    print('<trainer> on training set:')
    print("<trainer> online epoch # " .. epoch .. ' [batchSize = ' .. opt.batchSize .. ']')
+
    for t = 1,dataset:size(),opt.batchSize do
       -- create mini batch
       local inputs = torch.Tensor(opt.batchSize,1,geometry[1],geometry[2])
@@ -195,8 +193,7 @@ function train(dataset)
       local k = 1
       for i = t,math.min(t+opt.batchSize-1,dataset:size()) do
          -- load new sample
-         local sample ={ dataset.data[i][1], torch.zeros(9) }
-	 sample[2][dataset.labels[i]] = 1 --one hot rep
+         local sample = dataset[i]
          local input = sample[1]:clone()
          local _,target = sample[2]:clone():max(1)
          target = target:squeeze()
@@ -204,7 +201,8 @@ function train(dataset)
          targets[k] = target
          k = k + 1
       end
-
+      if k ~= opt.batchSize + 1 then break end
+   
       -- create closure to evaluate f(X) and df/dX
       local feval = function(x)
          -- just in case:
@@ -219,9 +217,15 @@ function train(dataset)
          gradParameters:zero()
 
          -- evaluate function for complete mini batch
-	 --error here, geometry isn't right. 
-
          local outputs = model:forward(inputs)
+
+         --Grab a copy of the first batch in and out
+         --T 
+         if i == 1 then
+            my_inputs = inputs:clone()
+            my_outputs = forward(inputs)
+         end
+
          local f = criterion:forward(outputs, targets)
 
          -- estimate df/dW
@@ -255,31 +259,26 @@ function train(dataset)
 
          -- Perform LBFGS step:
          lbfgsState = lbfgsState or {
-            maxIter = opt.maxIter,
-            lineSearch = optim.lswolfe
-         }
-         optim.lbfgs(feval, parameters, lbfgsState)
-       
+         maxIter = opt.maxIter,
+         lineSearch = optim.lswolfe
+      }
+      optim.lbfgs(feval, parameters, lbfgsState)
+
          -- disp report:
          print('LBFGS step')
          print(' - progress in batch: ' .. t .. '/' .. dataset:size())
          print(' - nb of iterations: ' .. lbfgsState.nIter)
          print(' - nb of function evalutions: ' .. lbfgsState.funcEval)
 
-      elseif opt.optimization == 'SGD' then
+         elseif opt.optimization == 'SGD' then
 
          -- Perform SGD step:
          sgdState = sgdState or {
-            learningRate = opt.learningRate,
-            momentum = opt.momentum,
-            learningRateDecay = 5e-7
-         }
-	 print("here")
-	 print(feval)
---	 print(parameters)
-	 print(sgdState)
-	 error()
-         optim.sgd(feval, parameters, sgdState)
+         learningRate = opt.learningRate,
+         momentum = opt.momentum,
+         learningRateDecay = 5e-7
+      }
+      optim.sgd(feval, parameters, sgdState)
       
          -- disp progress
          xlua.progress(t, dataset:size())
@@ -300,7 +299,7 @@ function train(dataset)
    confusion:zero()
 
    -- save/log current net
-   local filename = paths.concat(opt.save, 'mnist.net')
+   local filename = paths.concat(opt.save, 'forExpt.net')
    os.execute('mkdir -p ' .. sys.dirname(filename))
    if paths.filep(filename) then
       os.execute('mv ' .. filename .. ' ' .. filename .. '.old')
@@ -329,9 +328,7 @@ function test(dataset)
       local k = 1
       for i = t,math.min(t+opt.batchSize-1,dataset:size()) do
          -- load new sample
-         local sample ={ dataset.data[i][1], torch.zeros(9) }
-	 sample[2][dataset.labels[i]] = 1 --one hot rep
---         local sample = dataset[i]
+         local sample = dataset[i]
          local input = sample[1]:clone()
          local _,target = sample[2]:clone():max(1)
          target = target:squeeze()
@@ -339,7 +336,7 @@ function test(dataset)
          targets[k] = target
          k = k + 1
       end
-
+      if k ~= opt.batchSize + 1 then break end
       -- test samples
       local preds = model:forward(inputs)
 
