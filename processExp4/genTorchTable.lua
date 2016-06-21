@@ -14,90 +14,38 @@ memory:8,65536
 For this reason we will truncate the last 8 cols. 
 To Do: Pull out magic numbers.
 --]]
+
 torch.seed();
-recPath = '../data/exp3IncPngs/';
-
---forPath = '../data/forCountpngs/';
-
-recTmp   = {}; --Holds all records of rec.
---forTmp   = {}; --Holds all records of for.
+dataPath = '../data/exp3IncPngs/';
+dataTmp   = {}; --Holds all records of rec.
 
 require 'paths';
 require 'image';
 
 labels = {}
---Recursive count traces.
-for f in paths.iterfiles( recPath ) do
---   print("file name: " .. f); 
---   print("associated inc: " .. string.byte( string.sub(f, 1, 1)  )-48 );
---   get label for example
---   labels[ #labels + 1 ] = string.byte( string.sub(f, 1, 1)  )-48 
-
+dataTmp = {}
+for f in paths.iterfiles( dataPath ) do
    --Image loads in as 3d tensor. This selects out the 2 useful dimensions.
-   --Then removes the final 8 elements and truncates it to 500 elements. 
-   recT  = image.load(recPath..f):select(1,1):sub( 1,395 , 1,56 );
-   --Then flattens image to 1d.
-   print("assigning file " .. f .. " the label " .. string.byte( string.sub(f, 1, 1)  )-48 );
-   recTmp[#recTmp+1] = {recT:resize( (#recT)[1] * (#recT)[2] ) , string.byte( string.sub(f, 1, 1)  )-48  };
-end
-
---[[
---For loop count traces.
-for f in paths.iterfiles( forPath ) do
-   forT = image.load(forPath..f):select(1,1):sub( 1,500 , 1,56 );
+   --Then removes the final 8 elements and truncates it to 500 elements.    
+   dataTmp[#dataTmp+1] = {image.load(dataPath..f):select(1,1):sub( 1,395 , 1,56 ),
+      string.byte( string.sub(f, 1, 1)  )-48  };
    
-   forTmp[#forTmp+1] = {forT:resize( (#forT)[1] * (#forT)[2] ) , } ;
 end
---]]
 
 --The training set.
 outputTrain = {};
 --The testing set.
 outputTest  = {};
 
---Need to read label out of file name. 
---Fill out Training and testing sets with rec data.
-
-
-
-
-for i = 1,#recTmp do 
-
---   print("associating file: " .. f .. "  with inc: " .. labels[aa]);
---   if torch.uniform() < 0.8 
+for i = 1,#dataTmp do 
+   --print("associating file: " .. f .. "  with inc: " .. labels[aa]);
    if torch.uniform() < .8 --This is forcing it to go to 1 table
    then
-      outputTrain[ #outputTrain+1] =  recTmp[i] ; --Provide trace and label, 1
+      outputTrain[ #outputTrain+1] =  dataTmp[i] ; --Provide trace and label, 1
    else
-      outputTest[ #outputTest+1] = recTmp[i] ;
+      outputTest[ #outputTest+1] = dataTmp[i] ;
    end
 end
-
-
-
---[[
---Fill out Training and testing sets with rec data.
-for i = 1,#recTmp do 
-   if torch.uniform() < 0.8 
-   then
-      outputTrain[ #outputTrain+1] = { recTmp[i] , 1 }; --Provide trace and label, 1
-   else
-      outputTest[ #outputTest+1] = { recTmp[i] , 1  };
-   end
-end
---]]
-
---[[
---Fill out Training and testing sets with for data.
-for i = 1,#forTmp do 
-   if torch.uniform() < 0.8 
-   then
-      outputTrain[ #outputTrain+1] = { forTmp[i] , 2 }; --Provide trace and label, 1
-   else
-      outputTest[ #outputTest+1] = { forTmp[i] , 2  };
-   end
-end
---]]
 
 function outputTrain:size() return #outputTrain end
 function outputTest:size()  return #outputTest  end

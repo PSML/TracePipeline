@@ -14,7 +14,7 @@ criterion = nn.ClassNLLCriterion();
 trainer = nn.StochasticGradient(mlp, criterion);
 --Default learning rate is 0.01
 trainer.learningRate = .005
-trainer.maxIteration = 140
+trainer.maxIteration = 30
 
 trainer.shuffleIndices = true;
 trainer.learningRateDecay = 0.005; --.01 not bad

@@ -1,5 +1,2 @@
 cd CPU
-./runExptCPU.sh 
-exit
-cd ../GPU
-./runExptGPU.sh
+th runNets.lua
