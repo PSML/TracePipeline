@@ -1,10 +1,3 @@
-# Recurrent Neural Net to Classify Program State
-
-This is in an incomplete state. 
-
-A final project for Prof. Chin's ML course, 542 at BU. Running 
-on BU's Shared Computing Cluster for GPU access. 
-
 The 6502:
 https://en.wikipedia.org/wiki/MOS_Technology_6502
 
