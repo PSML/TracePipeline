@@ -14,19 +14,21 @@ sp:5,1
 sr:6,1
 memory:8,65536
 For this reason we will truncate the last 8 cols. 
-To Do: Pull out magic numbers.
+To Do: Clean this the hell up, it\'s embarrassing.
 --]]
 require 'paths';
 require 'image';
 torch.seed();
-local stub_path = '../datasources/stub_data/'
 
-trtotable = {}
+local trtotable = {}
 
+function trtotable.gentrtetab(dirpath, p)
+   --The training set.
+   local outputTrain = {};
+   --The testing set.
+   local outputTest  = {};
 
---is this needed
-function gentmp(dirpath)
-   local trcTmp   = {}; --Holds all records of rec.
+   --   local trcTmp   = {}; --Holds all records of rec.
    --local forTmp   = {}; --Holds all records of for.
    --Recursive count traces.
    for f in paths.iterfiles( dirpath ) do
@@ -34,62 +36,40 @@ function gentmp(dirpath)
       --Then removes the final 8 elements and truncates it to 500 elements. 
       local recT  = image.load(dirpath..f):select(1,1):sub( 1,500 , 1,56 );
       --Then flattens image to 1d.
-      trcTmp[#trcTmp+1] = recT:resize( (#recT)[1] * (#recT)[2] );
+      recT = recT:resize( (#recT)[1] * (#recT)[2] );
+
+      --Assign to train or test table.
+      if torch.uniform() < 0.8 
+      then
+	 outputTrain[#outputTrain+1] = { recT , 0 }; --Provide trace and label, 1
+      else
+	 outputTest[#outputTest+1] = { recT , 0  };
+      end
    end
-   return trcTmp
+
+--   function outputTrain:size() return #outputTrain end
+--   function outputTest:size()  return #outputTest  end
+   return outputTrain, outputTest
 end
 
---[[
---For loop count traces.
-for f in paths.iterfiles( forPath ) do
-   forT = image.load(forPath..f):select(1,1):sub( 1,500 , 1,56 );
-   forTmp[#forTmp+1] = forT:resize( (#forT)[1] * (#forT)[2] );
-end
---]]
-
-
-function hide()
---The training set.
-outputTrain = {};
---The testing set.
-outputTest  = {};
-
---Fill out Training and testing sets with rec data.
-for i = 1,#recTmp do 
-   if torch.uniform() < 0.8 
-   then
-      outputTrain[ #outputTrain+1] = { recTmp[i] , 1 }; --Provide trace and label, 1
-   else
-      outputTest[ #outputTest+1] = { recTmp[i] , 1  };
+function trtotable.tablelabel(t, l)
+   for k, v in pairs(t) do
+      v[2] = l
    end
 end
 
---[[
---Fill out Training and testing sets with for data.
-for i = 1,#forTmp do 
-   if torch.uniform() < 0.8 
-   then
-      outputTrain[ #outputTrain+1] = { forTmp[i] , 2 }; --Provide trace and label, 1
-   else
-      outputTest[ #outputTest+1] = { forTmp[i] , 2  };
+function trtotable.cattables(t1,t2)
+   local tmp = {}
+   --Deep copy t1
+   for i=1,#t1 do
+      tmp[i] = t1[i]
    end
+
+   for i=1,#t2 do
+      tmp[#tmp+1] = t2[i]
+   end
+   tmp.size = #tmp
+   return tmp
 end
---]]
-
-function outputTrain:size() return #outputTrain end
-function outputTest:size()  return #outputTest  end
-
-
-end
-
-
-function trtotable.totable(dirname, p)
-   local dirpath  = stub_path .. dirname .. "/"
-   print("rec path " .. dirpath)
-   print(gentmp(dirpath))
-
-end
-
-trtotable.totable("exp1ForCountPngs")
 
 return trtotable
