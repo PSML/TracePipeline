@@ -1,3 +1,0 @@
-#!/bin/bash
-
-sort -k2,2 | uniq -f1 | cut -d' ' -f2
