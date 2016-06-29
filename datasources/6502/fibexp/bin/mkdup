@@ -1,0 +1,4 @@
+#!/bin/bash
+
+sort -n -k1,1 | uniq -w 32 -D
+

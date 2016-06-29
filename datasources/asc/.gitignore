@@ -1,0 +1,17 @@
+tags
+*.swp
+maps/lexer.c
+maps/parser.c
+maps/parser.h
+*.o
+libssv.a
+libasc.a
+asc
+*.so
+nops
+counter
+loop
+collatz
+factor
+3sum
+warshall

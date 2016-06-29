@@ -12,6 +12,10 @@ local models = {}
 
 --Experimental
 local batch_num = 0
+
+--todo: eliminate this monstrosity
+geometry = {395, 56}
+
 ----------------------------------------------------------------------
 -- parse command-line options
 --
@@ -54,7 +58,7 @@ end
 function init_model()
 classes = {'0', '1'}
 
-
+classes = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
 -- geometry: width and height of input images
 
 
@@ -142,7 +146,7 @@ end
 
 -- define training and testing functions
 -- training function
-function train_mod(dataset)
+function train_mod(dataset, inputdim)
    -- epoch tracker
    epoch = epoch or 1
 
@@ -155,8 +159,13 @@ function train_mod(dataset)
 
    for t = 1,dataset:size(),opt.batchSize do
       -- create mini batch
---      local inputs = torch.Tensor(opt.batchSize,1,geometry[1],geometry[2])
-      local inputs = torch.Tensor(opt.batchSize,num_features)
+      local inputs = nil
+      if inputdim == 2 then
+	 inputs = torch.Tensor(opt.batchSize,1,geometry[1],geometry[2])
+      else
+	 inputs = torch.Tensor(opt.batchSize,num_features)
+      end
+
       local targets = torch.Tensor(opt.batchSize)
       local k = 1
       for i = t,math.min(t+opt.batchSize-1,dataset:size()) do
@@ -307,7 +316,7 @@ function train_mod(dataset)
 end
 
 -- test function
-function test_mod(dataset)
+function test_mod(dataset, inputdim)
    -- local vars
    local time = sys.clock()
 
@@ -318,7 +327,13 @@ function test_mod(dataset)
       xlua.progress(t, dataset:size())
 
       -- create mini batch
-      local inputs = torch.Tensor(opt.batchSize,1,num_features)
+      local inputs = nil
+
+      if inputdim == 2 then
+	 inputs = torch.Tensor(opt.batchSize,1,geometry[1],geometry[2])
+      else
+	 inputs = torch.Tensor(opt.batchSize,1,num_features)
+      end
       local targets = torch.Tensor(opt.batchSize)
       local k = 1
       for i = t,math.min(t+opt.batchSize-1,dataset:size()) do
@@ -363,13 +378,13 @@ function models.set_opt(new_opt)
 end
 ----------------------------------------------------------------------
 --Train
-function models.run(trainData, testData)
+function models.run(trainData, testData, inputdim)
    init_model()
    init_progress()
    while true do
       -- train/test
-      train_mod(trainData)
-      test_mod(testData)
+      train_mod(trainData, inputdim)
+      test_mod(testData, inputdim)
       
       -- plot errors
       if opt.plot then

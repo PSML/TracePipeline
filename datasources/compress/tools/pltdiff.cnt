@@ -1,0 +1,47 @@
+#!/bin/bash
+
+if [ $# -ne 5 ]; then
+  echo "USAGE: $0 [exp] [segment svnums file] [bitscnt file] [io svnums file] [output pdf]"
+  exit 0
+fi
+
+exp=$1
+seg=$2
+cnt=$3
+io=$4
+pdf=$5
+
+echo "${exp}y=load('$cnt');"
+echo "${exp}x=[1:1:rows(${exp}y)];"
+echo "${exp}x=${exp}x';"
+
+echo "${exp}segx=load('$seg');"
+echo "${exp}segymax=max(${exp}y);"
+
+echo "${exp}iox=load('$io');"
+echo "${exp}ioy=[${exp}y(${exp}iox)];"
+
+echo "f=figure(1);"
+echo "set(f,'visible','off');"
+
+echo "hold off;"
+echo "for v=1:length(${exp}segx),"
+echo "  plot([${exp}segx(v);${exp}segx(v)],[0;${exp}segymax],'g','markersize',1);"
+echo "  hold on;"
+echo "endfor;"
+echo "plot(${exp}x,${exp}y,'b.','markersize',3);"
+echo "hold on;"
+echo "plot(${exp}iox,${exp}ioy,'ro','markersize',3);"
+
+echo "axis([0,rows(${exp}y),0,max(${exp}y)]);"
+echo "ylabel('number of bits different');"
+echo "xlabel('instruction index');"
+echo "legend({'initial sv','','io'},'location','north');"
+echo "legend('boxon');"
+
+echo "H=113; W=9;"
+echo "set(f,'PaperOrientation','landscape');"
+echo "set(f,'PaperSize',[H,W]);"
+echo "set(f,'PaperPosition',[0,0,H,W]);"
+echo "ax=gca();"
+echo "print(f,'$pdf','-dpdf');"

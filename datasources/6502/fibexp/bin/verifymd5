@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ "$#" -ne "3" ]; then
+  echo "USAGE: $0 [md5] [trace] [block]"
+  exit 0
+fi
+
+md5=$1
+trace=$2
+block=$3
+cmp_sum=0
+
+# Don't use pipe here to avoid subshell so that
+# we can exit out of the main process not a subshell
+while read svnum sum; do
+  if [ "$sum" != "$cmp_sum" ]; then
+    cmp_svnum=$svnum
+    cmp_sum=$sum
+  else
+    sv=$((dd if=$trace bs=$block count=1 skip=$svnum) >&1)
+    cmp_sv=$((dd if=$trace bs=$block count=1 skip=$cmp_svnum) >&1)
+    diff=$((diff sv cmp_sv) >&1)
+    if [ -n "$diff" ]; then
+      echo "ERROR: Collision detected in SV $cmp_svnum and $svnum."
+      exit 0
+    fi
+  fi
+done < <(cat $md5 | sort -k2,2) 2> /dev/null
+
+echo "PASS: No collision detected in $md5" | tee $md5.collision

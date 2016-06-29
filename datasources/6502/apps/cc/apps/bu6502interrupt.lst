@@ -1,0 +1,52 @@
+ca65 V2.14.0
+Main file   : bu6502interrupt.s
+Current file: bu6502interrupt.s
+
+000000r 1               ; ---------------------------------------------------------------------------
+000000r 1               ; bu6502interrupt.s
+000000r 1               ; ---------------------------------------------------------------------------
+000000r 1               ; BU6502 code based on recommended code from cc65 customization documentation
+000000r 1               ; main difference is that both irq triggered by brk instruction do nothing
+000000r 1               ; but return given that BU6502 exits on BRK.
+000000r 1               ;
+000000r 1               ; Interrupt handler.
+000000r 1               ;
+000000r 1               ; Checks for a BRK instruction and returns from all valid interrupts.
+000000r 1               
+000000r 1               .export   _irq_int, _nmi_int
+000000r 1               
+000000r 1               .segment  "CODE"
+000000r 1               
+000000r 1               .PC02                             ; Force 65C02 assembly mode
+000000r 1               
+000000r 1               ; ---------------------------------------------------------------------------
+000000r 1               ; Non-maskable interrupt (NMI) service routine
+000000r 1               
+000000r 1  40           _nmi_int:  RTI                    ; Return from all NMI interrupts
+000001r 1               
+000001r 1               ; ---------------------------------------------------------------------------
+000001r 1               ; Maskable interrupt (IRQ) service routine
+000001r 1               
+000001r 1  DA           _irq_int:  PHX                    ; Save X register contents to stack
+000002r 1  BA                      TSX                    ; Transfer stack pointer to X
+000003r 1  48                      PHA                    ; Save accumulator contents to stack
+000004r 1  E8                      INX                    ; Increment X so it points to the status
+000005r 1  E8                      INX                    ;   register value saved on the stack
+000006r 1  BD 00 01                LDA $100,X             ; Load status register contents
+000009r 1  29 10                   AND #$10               ; Isolate B status bit
+00000Br 1  D0 03                   BNE break              ; If B = 1, BRK detected
+00000Dr 1               
+00000Dr 1               ; ---------------------------------------------------------------------------
+00000Dr 1               ; IRQ detected, return
+00000Dr 1               
+00000Dr 1  68           irq:       PLA                    ; Restore accumulator contents
+00000Er 1  FA                      PLX                    ; Restore X register contents
+00000Fr 1  40                      RTI                    ; Return from all IRQ interrupts
+000010r 1               
+000010r 1               ; ---------------------------------------------------------------------------
+000010r 1               ; BRK detected, for the moment we are doing nothing just retrurn
+000010r 1               
+000010r 1  68           break:     PLA                    ; Restore accumulator contents
+000011r 1  FA                      PLX                    ; Restore X register contents
+000012r 1  40                      RTI                    ; Return from all IRQ interrupts
+000012r 1               

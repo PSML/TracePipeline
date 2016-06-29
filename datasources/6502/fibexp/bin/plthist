@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ $# -ne 3 ]; then
+  echo "USAGE: $0 [exp] [histcnt file] [output pdf]"
+  exit 0
+fi
+
+exp=$1
+histcnt=$2
+pdf=$3
+
+echo "$exp=load('$histcnt');"
+
+echo "f=figure(1);"
+echo "set(f,'visible','off');"
+echo "bar($exp,'facecolor','r','edgecolor','r');"
+echo "ylabel('index');"
+echo "xlabel('count');"
+echo "title('$exp sorted uniq MD5 counts');"
+
+echo "H=6; W=6; B=0.2;"
+echo "set(f,'PaperSize',[H,W]);"
+echo "set(f,'PaperPosition',[0,0,H,W]);"
+echo "ax=gca();"
+echo "print(f,'$pdf','-dpdf');"

@@ -1,0 +1,53 @@
+As a hint I want to point out a subtly to implementing 4 of the instructions
+that you will need to get right to get unknown2 to work.
+
+If you carefully study the 6502_A_4_gsX_.pdf you will notice that the
+instructions break down according to their addressing modes such 
+that most instructions support either 
+a memory based operand that can is specified by one of the following addressing modes:
+  ABS,         // abs: Absolute a 
+  ABSX,        // abs,X: Absolute Indexed with X a,x
+  ABSY,        // abs,Y: Absolute Indexed with Y a,y
+  IMM,         // #: Immediate #
+  IND,         // ind: Absolute Indirect (a)
+  XIND,        // X,ind: Zero Page Index Indirect (zp,x)
+  INDY,        // ind,Y: Zero Page Indirect Indexed with Y (zp),y
+  REL,         // rel: Program Counter Relative r
+  ZP,          // zpg: Zero Page zp
+  ZPX,         // zpg,X: Zero Page Index with X
+  ZPY,         // zpg,Y: Zero Page Index with Y
+
+or non-memory based oprands specified by the immediate addressing mode: 
+  IMPL,        // impl: Implied i
+ 
+but NOT both!
+
+This means with the memory based ones simply setting up the abr value in your address mode function
+will allow you to implement the instruction function by using the abr value or in the case
+of the implied the instruction function can knows that it does not need the abr value and
+is coded appropriately
+
+HOWEVER: 
+
+There are four instructions that support the Accumulator address mode and these
+instructions also support memory based addressing modes
+
+  ACC,         // A: Accumulator A
+
+specifically the instructions are : ASL, LSR, ROL, ROR
+
+When implementing these four you need to check to see what the address mode is of the opcode
+that triggered the instruction function to be invoked.  You can then tell if you should use the 
+abr to locate the operand in memory or if you should use the accumulator register.
+The following is a template of the kind of code you might use for these instructions:
+
+  if (op->am->mode == ACC) {
+     do accumulator based behaviour here
+  } else {
+     do memory  based behaviour here using the abr value
+  }
+
+
+
+
+

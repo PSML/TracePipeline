@@ -1,0 +1,40 @@
+#!/bin/bash
+
+cmp -l $1 $2  | while read off b1 b2; do
+  if (( off > 8 )); then
+     ((off-=9))
+     printf "%04X %02X %02X\n" $off 0$b1 0$b2
+  else
+    ((off-=1))
+    case $off in
+    0) 
+       printf "%1dPCL %02X %02X\n" $off 0$b1 0$b2
+       ;;
+    1) 
+       printf "%1dPCH %02X %02X\n" $off 0$b1 0$b2
+       ;;
+    2) 
+       printf "%02dAC %02X %02X\n" $off 0$b1 0$b2
+       ;;
+    3) 
+       printf "%03dX %02X %02X\n" $off 0$b1 0$b2
+       ;;
+    4) 
+       printf "%03dY %02X %02X\n" $off 0$b1 0$b2
+       ;;
+    5) 
+       printf "%02dSP %02X %02X\n" $off 0$b1 0$b2
+       ;;
+    6) 
+       printf "%02dSR %02X %02X\n" $off 0$b1 0$b2
+       ;;
+    7) 
+       printf "%1dEXT %02X %02X\n" $off 0$b1 0$b2
+       ;;
+    *)
+       echo ERROR $off $b1 $b2
+       exit -1;
+       ;;
+    esac
+  fi
+done

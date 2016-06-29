@@ -1,0 +1,29 @@
+#!/bin/bash
+
+declare -A ht
+declare -i i
+declare -i hamm
+declare -i raddr
+declare -a pts
+
+while read -a bits; do
+  hamm=${#bits[@]}
+  if [[ -z "$hamm" ]]; then
+    continue
+  fi
+  raddr=${bits[$hamm-1]}/8
+  cnthash="$hamm $raddr"
+  if [[ -n ${ht[$cnthash]} ]]; then
+    i=ht[$cnthash]
+    ((i++))
+    ht[$cnthash]="$i"
+  else
+    ht[$cnthash]="1"
+    pts[${#pts[@]}]=$cnthash
+  fi
+  for pt in "${pts[@]}"; do
+    echo "$pt ${ht[$pt]}"
+  done
+  echo ""
+done
+

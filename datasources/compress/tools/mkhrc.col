@@ -1,0 +1,17 @@
+#!/bin/bash
+
+hrc=$1
+col=$2
+
+if [ $# -ne 2 ]; then
+  echo "USAGE: $0 [hrc file] [column]"
+  exit 0
+fi
+
+cut -d' ' -f$col $hrc | while read num; do
+  if [[ -z "$num" ]]; then
+    echo ""
+  else
+    echo -n "$num "
+  fi
+done

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if [ $# -ne 5 ] && [ $# -ne 7 ]; then
+  echo "USAGE: $0 [exp] <pc|ac|x|y|sp|sr> [diff1 trace file] [initial sv file] [output file] [start sv] [end sv]"
+  echo "       If [start sv] and [end sv] not specified, the entire trace is processed."
+  exit 0
+fi
+
+exp=$1
+reg=$2
+trace=$3
+initsv=$4
+out=$5
+s=0; e=0
+
+if [ $# -eq 7 ]; then
+  s=$6; e=$7
+fi
+
+~/6502/fibexp/bin/filter -o $out -s $s -e $e -t mask -m reg -r $reg $trace $initsv > $out.idx 2> $out.info
+
+echo "Created: $out | $out.idx | $out.info"

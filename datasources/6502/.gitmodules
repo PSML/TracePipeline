@@ -1,0 +1,4 @@
+[submodule "ext/cc65"]
+	path = ext/cc65
+	url = https://github.com/oliverschmidt/cc65.git
+	branch = master

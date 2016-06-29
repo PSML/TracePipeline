@@ -1,0 +1,120 @@
+Modules list:
+-------------
+bu6502interrupt.o:
+    CODE              Offs=000000  Size=000013  Align=00001  Fill=0000
+crt0.o:
+    STARTUP           Offs=000000  Size=00001C  Align=00001  Fill=0000
+    VECTORS           Offs=000000  Size=000006  Align=00001  Fill=0000
+ctype.o:
+    RODATA            Offs=000000  Size=000100  Align=00001  Fill=0000
+cputc.o:
+    CODE              Offs=000013  Size=000004  Align=00001  Fill=0000
+cgetc.o:
+    CODE              Offs=000017  Size=000004  Align=00001  Fill=0000
+oserror.o:
+    CODE              Offs=00001B  Size=000016  Align=00001  Fill=0000
+    RODATA            Offs=000100  Size=000030  Align=00001  Fill=0000
+readtest.o:
+    CODE              Offs=000031  Size=000020  Align=00001  Fill=0000
+bu6502.lib(condes.o):
+    CODE              Offs=000051  Size=00000C  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000025  Align=00001  Fill=0000
+    INIT              Offs=000000  Size=00000C  Align=00001  Fill=0000
+bu6502.lib(copydata.o):
+    CODE              Offs=00005D  Size=00002D  Align=00001  Fill=0000
+bu6502.lib(incsp2.o):
+    CODE              Offs=00008A  Size=000016  Align=00001  Fill=0000
+bu6502.lib(pushax.o):
+    CODE              Offs=0000A0  Size=00001A  Align=00001  Fill=0000
+bu6502.lib(zerobss.o):
+    INIT              Offs=00000C  Size=000023  Align=00001  Fill=0000
+bu6502.lib(zeropage.o):
+    ZEROPAGE          Offs=000000  Size=00001A  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+ZEROPAGE              000000  000019  00001A  00001
+DATA                  000200  000224  000025  00001
+STARTUP               000500  00051B  00001C  00001
+INIT                  00051C  00054A  00002F  00001
+CODE                  00054B  000604  0000BA  00001
+RODATA                000605  000734  000130  00001
+VECTORS               00FFFA  00FFFF  000006  00001
+
+
+Exports list:
+-------------
+__BSS_RUN__               000735 RLA    __BSS_SIZE__              000000 REA    
+__CONSTRUCTOR_COUNT__     000000 REA    __CONSTRUCTOR_TABLE__     00051C RLA    
+__DATA_LOAD__             000200 RLA    __DATA_RUN__              000200 RLA    
+__DATA_SIZE__             000025 REA    __DESTRUCTOR_COUNT__      000000 REA    
+__DESTRUCTOR_TABLE__      00051C RLA    __STACKSTART__            00FEFF REA    
+__STARTUP__               000001 REA    _irq_int                  00054C RLA    
+_main                     00057C RLA    _nmi_int                  00054B RLA    
+copydata                  0005A8 RLA    donelib                   00059C RLA    
+incsp2                    0005DD RLA    initlib                   00051C RLA    
+ptr1                      000008 RLZ    ptr2                      00000A RLZ    
+pushax                    0005EF RLA    sp                        000000 RLZ    
+tmp1                      000010 RLZ    zerobss                   000528 RLA    
+
+
+
+Imports list:
+-------------
+__BSS_RUN__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__BSS_SIZE__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__CONSTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__CONSTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__DATA_LOAD__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DATA_RUN__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DATA_SIZE__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DESTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__DESTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__STACKSTART__ ([linker generated]):
+    crt0.o                    crt0.s(12)
+__STARTUP__ (crt0.o):
+    readtest.o                readtest.s(13)
+_irq_int (bu6502interrupt.o):
+    crt0.o                    crt0.s(9)
+_main (readtest.o):
+    crt0.o                    crt0.s(9)
+_nmi_int (bu6502interrupt.o):
+    crt0.o                    crt0.s(9)
+copydata (copydata.o):
+    crt0.o                    crt0.s(13)
+donelib (condes.o):
+    crt0.o                    crt0.s(13)
+incsp2 (incsp2.o):
+    readtest.o                readtest.s(44)
+initlib (condes.o):
+    crt0.o                    crt0.s(13)
+ptr1 (zeropage.o):
+    zerobss.o                 common/zerobss.s(9)
+    copydata.o                common/copydata.s(9)
+    readtest.o                readtest.s(11)
+ptr2 (zeropage.o):
+    copydata.o                common/copydata.s(9)
+pushax (pushax.o):
+    readtest.o                readtest.s(44)
+sp (zeropage.o):
+    pushax.o                  runtime/pushax.s(8)
+    incsp2.o                  runtime/incsp2.s(8)
+    readtest.o                readtest.s(10)
+    crt0.o                    /Users/tu/Documents/MLProject/datasources/6502/ext/install/share/cc65/asminc/zeropage.inc(11)
+tmp1 (zeropage.o):
+    copydata.o                common/copydata.s(9)
+zerobss (zerobss.o):
+    crt0.o                    crt0.s(13)
+

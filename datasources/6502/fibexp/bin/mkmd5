@@ -1,0 +1,28 @@
+#!/bin/bash
+
+if [ $# -ne 2 ] && [ $# -ne 4 ]; then
+  echo "USAGE: $0 [input trace] [block] [start block] [end block]"
+  echo "       If [start block] and [end block] are not specified, the entire trace is processed."
+  exit 0
+fi
+
+trace=$1
+block=$2
+
+svnum=`expr $(stat -c%s $trace) / $block`
+
+if [ $# -eq 2 ]; then
+  s=0; e=`expr $svnum - 1`
+else
+  s=$4; e=`expr $5 - 1`
+fi
+
+if [ $s -gt $svnum ] || [ $e -gt $svnum ]; then
+  echo "ERROR: trace file only has $svnum blocks."
+  exit 0
+fi
+
+for i in $(seq $s $e); do
+  echo -n "$i "
+  dd if=$trace bs=$block count=1 skip=$i | md5sum | cut -d' ' -f1,2
+done 2> /dev/null

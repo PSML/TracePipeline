@@ -22,7 +22,8 @@ torch.seed();
 
 local trtotable = {}
 
-function trtotable.gentrtetab(dirpath, p)
+function trtotable.gentrtetab(dirpath, p, flatten)
+   --todo deal with max length
    --The training set.
    local outputTrain = {};
    --The testing set.
@@ -34,16 +35,19 @@ function trtotable.gentrtetab(dirpath, p)
    for f in paths.iterfiles( dirpath ) do
       --Image loads in as 3d tensor. This selects out the 2 useful dimensions.
       --Then removes the final 8 elements and truncates it to 500 elements. 
-      local recT  = image.load(dirpath..f):select(1,1):sub( 1,500 , 1,56 );
+      local img = image.load(dirpath..f)
+      --cropping should be own fn.
+      local recT  = img:select(1,1):sub( 1, math.min(500, img:size(2))  , 1,56 );
       --Then flattens image to 1d.
-      recT = recT:resize( (#recT)[1] * (#recT)[2] );
-
+      if flatten then
+	 recT = recT:resize( (#recT)[1] * (#recT)[2] );
+      end
       --Assign to train or test table.
       if torch.uniform() < 0.8 
       then
-	 outputTrain[#outputTrain+1] = { recT , 0 }; --Provide trace and label, 1
+	 outputTrain[#outputTrain+1] = { recT , f }; --Provide trace and label, 1
       else
-	 outputTest[#outputTest+1] = { recT , 0  };
+	 outputTest[#outputTest+1] = { recT , f  };
       end
    end
 
@@ -70,6 +74,13 @@ function trtotable.cattables(t1,t2)
    end
    tmp.size = #tmp
    return tmp
+end
+
+function trtotable.filenametolabel(t)
+   for i=1,#t do
+      t[i][2] = tonumber(string.sub(t[i][2], 1, 1))
+   end
+   return t
 end
 
 return trtotable

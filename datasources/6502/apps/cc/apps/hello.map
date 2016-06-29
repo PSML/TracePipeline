@@ -1,0 +1,250 @@
+Modules list:
+-------------
+hello.o:
+    CODE              Offs=000000  Size=000071  Align=00001  Fill=0000
+    RODATA            Offs=000000  Size=000062  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=000050  Align=00001  Fill=0000
+bu6502.lib(_hextab.o):
+    RODATA            Offs=000062  Size=000010  Align=00001  Fill=0000
+bu6502.lib(_longminstr.o):
+    RODATA            Offs=000072  Size=00000C  Align=00001  Fill=0000
+bu6502.lib(_printf.o):
+    CODE              Offs=000071  Size=0003A5  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=00002B  Align=00001  Fill=0000
+    DATA              Offs=000050  Size=000003  Align=00001  Fill=0000
+bu6502.lib(addysp.o):
+    CODE              Offs=000416  Size=00000E  Align=00001  Fill=0000
+bu6502.lib(axlong.o):
+    CODE              Offs=000424  Size=000012  Align=00001  Fill=0000
+bu6502.lib(condes.o):
+    CODE              Offs=000436  Size=00000C  Align=00001  Fill=0000
+    DATA              Offs=000053  Size=000025  Align=00001  Fill=0000
+    INIT              Offs=000000  Size=00000C  Align=00001  Fill=0000
+bu6502.lib(copydata.o):
+    CODE              Offs=000442  Size=00002D  Align=00001  Fill=0000
+bu6502.lib(cprintf.o):
+    CODE              Offs=00046F  Size=00002A  Align=00001  Fill=0000
+    BSS               Offs=00002B  Size=000001  Align=00001  Fill=0000
+bu6502.lib(decsp4.o):
+    CODE              Offs=000499  Size=00000D  Align=00001  Fill=0000
+bu6502.lib(decsp6.o):
+    CODE              Offs=0004A6  Size=00000D  Align=00001  Fill=0000
+bu6502.lib(incsp2.o):
+    CODE              Offs=0004B3  Size=000016  Align=00001  Fill=0000
+bu6502.lib(incsp3.o):
+    CODE              Offs=0004C9  Size=000005  Align=00001  Fill=0000
+bu6502.lib(lpush.o):
+    CODE              Offs=0004CE  Size=000021  Align=00001  Fill=0000
+bu6502.lib(ltoa.o):
+    CODE              Offs=0004EF  Size=0000AF  Align=00001  Fill=0000
+bu6502.lib(push1.o):
+    CODE              Offs=00059E  Size=000005  Align=00001  Fill=0000
+bu6502.lib(pusha.o):
+    CODE              Offs=0005A3  Size=000016  Align=00001  Fill=0000
+bu6502.lib(pushax.o):
+    CODE              Offs=0005B9  Size=00001A  Align=00001  Fill=0000
+bu6502.lib(pushwsp.o):
+    CODE              Offs=0005D3  Size=00001C  Align=00001  Fill=0000
+bu6502.lib(strlen.o):
+    CODE              Offs=0005EF  Size=000016  Align=00001  Fill=0000
+bu6502.lib(strlower.o):
+    CODE              Offs=000605  Size=000028  Align=00001  Fill=0000
+bu6502.lib(vcprintf.o):
+    CODE              Offs=00062D  Size=00007E  Align=00001  Fill=0000
+    DATA              Offs=000078  Size=000008  Align=00001  Fill=0000
+bu6502.lib(zerobss.o):
+    INIT              Offs=00000C  Size=000023  Align=00001  Fill=0000
+bu6502.lib(zeropage.o):
+    ZEROPAGE          Offs=000000  Size=00001A  Align=00001  Fill=0000
+bu6502.lib(bu6502interrupt.o):
+    CODE              Offs=0006AB  Size=000013  Align=00001  Fill=0000
+bu6502.lib(crt0.o):
+    STARTUP           Offs=000000  Size=00001C  Align=00001  Fill=0000
+    VECTORS           Offs=000000  Size=000006  Align=00001  Fill=0000
+bu6502.lib(ctype.o):
+    RODATA            Offs=00007E  Size=000100  Align=00001  Fill=0000
+bu6502.lib(cputc.o):
+    CODE              Offs=0006BE  Size=000004  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+ZEROPAGE              000000  000019  00001A  00001
+DATA                  000200  00027F  000080  00001
+STARTUP               000500  00051B  00001C  00001
+INIT                  00051C  00054A  00002F  00001
+CODE                  00054B  000C0C  0006C2  00001
+RODATA                000C0D  000D8A  00017E  00001
+BSS                   000D8B  000DB6  00002C  00001
+VECTORS               00FFFA  00FFFF  000006  00001
+
+
+Exports list:
+-------------
+__BSS_RUN__               000D8B RLA    __BSS_SIZE__              00002C REA    
+__CONSTRUCTOR_COUNT__     000000 REA    __CONSTRUCTOR_TABLE__     00051C RLA    
+__DATA_LOAD__             000200 RLA    __DATA_RUN__              000200 RLA    
+__DATA_SIZE__             000080 REA    __DESTRUCTOR_COUNT__      000000 REA    
+__DESTRUCTOR_TABLE__      00051C RLA    __STACKSTART__            00FEFF REA    
+__STARTUP__               000001 REA    __ctype                   000C8B RLA    
+__hextab                  000C6F RLA    __longminstr              000C7F RLA    
+__printf                  0006AF RLA    _cprintf                  0009BA RLA    
+_cputc                    000C09 RLA    _irq_int                  000BF7 RLA    
+_ltoa                     000A56 RLA    _main                     00054B RLA    
+_nmi_int                  000BF6 RLA    _strlen                   000B3A RLA    
+_strlower                 000B50 RLA    _ultoa                    000AAD RLA    
+_vcprintf                 000BC6 RLA    addysp                    000962 RLA    
+axlong                    000976 RLA    axulong                   00096F RLA    
+copydata                  00098D RLA    decsp4                    0009E4 RLA    
+decsp6                    0009F1 RLA    donelib                   000981 RLA    
+incsp3                    000A14 RLA    initlib                   00051C RLA    
+popax                     0009FE RLA    ptr1                      000008 RLZ    
+ptr2                      00000A RLZ    ptr3                      00000C RLZ    
+push1                     000AE9 RLA    pusha                     000AF2 RLA    
+pusha0                    000B06 RLA    pushax                    000B08 RLA    
+pusheax                   000A22 RLA    pushwysp                  000B20 RLA    
+regbank                   000014 RLZ    sp                        000000 RLZ    
+sreg                      000002 RLZ    tmp1                      000010 RLZ    
+zerobss                   000528 RLA    
+
+
+Imports list:
+-------------
+__BSS_RUN__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__BSS_SIZE__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__CONSTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__CONSTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__DATA_LOAD__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DATA_RUN__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DATA_SIZE__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DESTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__DESTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__STACKSTART__ ([linker generated]):
+    crt0.o                    crt0.s(12)
+__STARTUP__ (crt0.o):
+    hello.o                   hello.s(13)
+__ctype (ctype.o):
+    strlower.o                common/strlower.s(13)
+__hextab (_hextab.o):
+    ltoa.o                    common/ltoa.s(10)
+__longminstr (_longminstr.o):
+    ltoa.o                    common/ltoa.s(10)
+__printf (_printf.o):
+    vcprintf.o                conio/vcprintf.s(9)
+_cprintf (cprintf.o):
+    hello.o                   hello.s(14)
+_cputc (cputc.o):
+    vcprintf.o                conio/vcprintf.s(9)
+_irq_int (bu6502interrupt.o):
+    crt0.o                    crt0.s(9)
+_ltoa (ltoa.o):
+    _printf.o                 common/_printf.s(12)
+_main (hello.o):
+    crt0.o                    crt0.s(9)
+_nmi_int (bu6502interrupt.o):
+    crt0.o                    crt0.s(9)
+_strlen (strlen.o):
+    _printf.o                 common/_printf.s(13)
+_strlower (strlower.o):
+    _printf.o                 common/_printf.s(13)
+_ultoa (ltoa.o):
+    _printf.o                 common/_printf.s(12)
+_vcprintf (vcprintf.o):
+    cprintf.o                 conio/cprintf.s(8)
+addysp (addysp.o):
+    incsp3.o                  runtime/incsp3.s(8)
+    cprintf.o                 conio/cprintf.s(8)
+axlong (axlong.o):
+    _printf.o                 common/_printf.s(11)
+axulong (axlong.o):
+    _printf.o                 common/_printf.s(11)
+copydata (copydata.o):
+    crt0.o                    crt0.s(13)
+decsp4 (decsp4.o):
+    lpush.o                   runtime/lpush.s(11)
+decsp6 (decsp6.o):
+    _printf.o                 common/_printf.s(11)
+donelib (condes.o):
+    crt0.o                    crt0.s(13)
+incsp3 (incsp3.o):
+    hello.o                   hello.s(99)
+initlib (condes.o):
+    crt0.o                    crt0.s(13)
+popax (incsp2.o):
+    ltoa.o                    common/ltoa.s(9)
+    _printf.o                 common/_printf.s(11)
+    vcprintf.o                conio/vcprintf.s(8)
+ptr1 (zeropage.o):
+    zerobss.o                 common/zerobss.s(9)
+    strlower.o                common/strlower.s(14)
+    strlen.o                  common/strlen.s(8)
+    ltoa.o                    common/ltoa.s(11)
+    copydata.o                common/copydata.s(9)
+    _printf.o                 /Users/tu/Documents/MLProject/6502/ext/install/share/cc65/asminc/zeropage.inc(12)
+    vcprintf.o                conio/vcprintf.s(10)
+    cprintf.o                 conio/cprintf.s(9)
+ptr2 (zeropage.o):
+    strlower.o                common/strlower.s(14)
+    ltoa.o                    common/ltoa.s(11)
+    copydata.o                common/copydata.s(9)
+    _printf.o                 /Users/tu/Documents/MLProject/6502/ext/install/share/cc65/asminc/zeropage.inc(12)
+    vcprintf.o                conio/vcprintf.s(10)
+ptr3 (zeropage.o):
+    ltoa.o                    common/ltoa.s(11)
+    vcprintf.o                conio/vcprintf.s(10)
+push1 (push1.o):
+    _printf.o                 common/_printf.s(11)
+pusha (pusha.o):
+    hello.o                   hello.s(99)
+pusha0 (pushax.o):
+    push1.o                   runtime/push1.s(8)
+    hello.o                   hello.s(99)
+pushax (pushax.o):
+    _printf.o                 common/_printf.s(11)
+    vcprintf.o                conio/vcprintf.s(8)
+    cprintf.o                 conio/cprintf.s(8)
+    hello.o                   hello.s(99)
+pusheax (lpush.o):
+    _printf.o                 common/_printf.s(11)
+pushwysp (pushwsp.o):
+    hello.o                   hello.s(99)
+regbank (zeropage.o):
+    _printf.o                 /Users/tu/Documents/MLProject/6502/ext/install/share/cc65/asminc/zeropage.inc(14)
+sp (zeropage.o):
+    decsp4.o                  runtime/decsp4.s(8)
+    lpush.o                   runtime/lpush.s(12)
+    incsp2.o                  runtime/incsp2.s(8)
+    decsp6.o                  runtime/decsp6.s(8)
+    addysp.o                  runtime/addysp.s(8)
+    _printf.o                 /Users/tu/Documents/MLProject/6502/ext/install/share/cc65/asminc/zeropage.inc(11)
+    crt0.o                    /Users/tu/Documents/MLProject/datasources/6502/ext/install/share/cc65/asminc/zeropage.inc(11)
+    vcprintf.o                conio/vcprintf.s(10)
+    pushwsp.o                 runtime/pushwsp.s(8)
+    pushax.o                  runtime/pushax.s(8)
+    pusha.o                   runtime/pusha.s(8)
+    cprintf.o                 conio/cprintf.s(9)
+    hello.o                   hello.s(10)
+sreg (zeropage.o):
+    ltoa.o                    common/ltoa.s(11)
+    lpush.o                   runtime/lpush.s(12)
+    axlong.o                  runtime/axlong.s(8)
+    _printf.o                 /Users/tu/Documents/MLProject/6502/ext/install/share/cc65/asminc/zeropage.inc(11)
+tmp1 (zeropage.o):
+    ltoa.o                    common/ltoa.s(11)
+    copydata.o                common/copydata.s(9)
+    _printf.o                 /Users/tu/Documents/MLProject/6502/ext/install/share/cc65/asminc/zeropage.inc(13)
+    vcprintf.o                conio/vcprintf.s(10)
+zerobss (zerobss.o):
+    crt0.o                    crt0.s(13)
+

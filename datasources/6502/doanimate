@@ -1,0 +1,3 @@
+#!/bin/bash
+
+animate -delay 20 $(ls $1| sort -n)

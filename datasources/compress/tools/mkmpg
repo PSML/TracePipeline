@@ -1,0 +1,22 @@
+#!/bin/bash
+
+flst=$1
+cnt=$2
+
+if [[ -z $# ]]; then
+  echo "USAGE: $0 [flst file] [optional count]"
+  exit 0
+fi
+
+mkdir tmp
+
+export TMPDIR=tmp
+
+if [[ -n $cnt ]]
+then
+  head -$cnt $flst.flst | convert @- ${flst}_${cnt}.pid$$.mpg
+else
+  cat $flst.flst | convert @- $flst.pid$$.mpg
+fi
+
+rm -r tmp

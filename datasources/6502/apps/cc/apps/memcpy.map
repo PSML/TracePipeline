@@ -1,0 +1,130 @@
+Modules list:
+-------------
+memcpy.o:
+    CODE              Offs=000000  Size=00003C  Align=00001  Fill=0000
+    BSS               Offs=000000  Size=00000C  Align=00001  Fill=0000
+    DATA              Offs=000000  Size=00000C  Align=00001  Fill=0000
+bu6502.lib(condes.o):
+    CODE              Offs=00003C  Size=00000C  Align=00001  Fill=0000
+    DATA              Offs=00000C  Size=000025  Align=00001  Fill=0000
+    INIT              Offs=000000  Size=00000C  Align=00001  Fill=0000
+bu6502.lib(copydata.o):
+    CODE              Offs=000048  Size=00002D  Align=00001  Fill=0000
+bu6502.lib(incsp1.o):
+    CODE              Offs=000075  Size=000007  Align=00001  Fill=0000
+bu6502.lib(incsp2.o):
+    CODE              Offs=00007C  Size=000016  Align=00001  Fill=0000
+bu6502.lib(pusha.o):
+    CODE              Offs=000092  Size=000016  Align=00001  Fill=0000
+bu6502.lib(pushax.o):
+    CODE              Offs=0000A8  Size=00001A  Align=00001  Fill=0000
+bu6502.lib(staspidx.o):
+    CODE              Offs=0000C2  Size=000016  Align=00001  Fill=0000
+bu6502.lib(zerobss.o):
+    INIT              Offs=00000C  Size=000023  Align=00001  Fill=0000
+bu6502.lib(zeropage.o):
+    ZEROPAGE          Offs=000000  Size=00001A  Align=00001  Fill=0000
+bu6502.lib(bu6502interrupt.o):
+    CODE              Offs=0000D8  Size=000013  Align=00001  Fill=0000
+bu6502.lib(crt0.o):
+    STARTUP           Offs=000000  Size=00001C  Align=00001  Fill=0000
+    VECTORS           Offs=000000  Size=000006  Align=00001  Fill=0000
+
+
+Segment list:
+-------------
+Name                   Start     End    Size  Align
+----------------------------------------------------
+ZEROPAGE              000000  000019  00001A  00001
+DATA                  000200  000230  000031  00001
+STARTUP               000500  00051B  00001C  00001
+INIT                  00051C  00054A  00002F  00001
+CODE                  00054B  000635  0000EB  00001
+BSS                   000636  000641  00000C  00001
+VECTORS               00FFFA  00FFFF  000006  00001
+
+
+Exports list:
+-------------
+__BSS_RUN__               000636 RLA    __BSS_SIZE__              00000C REA    
+__CONSTRUCTOR_COUNT__     000000 REA    __CONSTRUCTOR_TABLE__     00051C RLA    
+__DATA_LOAD__             000200 RLA    __DATA_RUN__              000200 RLA    
+__DATA_SIZE__             000031 REA    __DESTRUCTOR_COUNT__      000000 REA    
+__DESTRUCTOR_TABLE__      00051C RLA    __STACKSTART__            00FEFF REA    
+__STARTUP__               000001 REA    _irq_int                  000624 RLA    
+_main                     00054B RLA    _nmi_int                  000623 RLA    
+copydata                  000593 RLA    donelib                   000587 RLA    
+incsp1                    0005C0 RLA    incsp2                    0005CF RLA    
+initlib                   00051C RLA    ptr1                      000008 RLZ    
+ptr2                      00000A RLZ    pusha                     0005E1 RLA    
+pushax                    0005F7 RLA    sp                        000000 RLZ    
+staspidx                  00060D RLA    tmp1                      000010 RLZ    
+zerobss                   000528 RLA    
+
+
+Imports list:
+-------------
+__BSS_RUN__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__BSS_SIZE__ ([linker generated]):
+    zerobss.o                 common/zerobss.s(8)
+__CONSTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__CONSTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(18)
+__DATA_LOAD__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DATA_RUN__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DATA_SIZE__ ([linker generated]):
+    copydata.o                common/copydata.s(8)
+__DESTRUCTOR_COUNT__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__DESTRUCTOR_TABLE__ ([linker generated]):
+    condes.o                  runtime/condes.s(19)
+__STACKSTART__ ([linker generated]):
+    crt0.o                    crt0.s(12)
+__STARTUP__ (crt0.o):
+    memcpy.o                  memcpy.s(13)
+_irq_int (bu6502interrupt.o):
+    crt0.o                    crt0.s(9)
+_main (memcpy.o):
+    crt0.o                    crt0.s(9)
+_nmi_int (bu6502interrupt.o):
+    crt0.o                    crt0.s(9)
+copydata (copydata.o):
+    crt0.o                    crt0.s(13)
+donelib (condes.o):
+    crt0.o                    crt0.s(13)
+incsp1 (incsp1.o):
+    memcpy.o                  memcpy.s(69)
+incsp2 (incsp2.o):
+    staspidx.o                runtime/staspidx.s(8)
+initlib (condes.o):
+    crt0.o                    crt0.s(13)
+ptr1 (zeropage.o):
+    zerobss.o                 common/zerobss.s(9)
+    copydata.o                common/copydata.s(9)
+    staspidx.o                runtime/staspidx.s(9)
+ptr2 (zeropage.o):
+    copydata.o                common/copydata.s(9)
+pusha (pusha.o):
+    memcpy.o                  memcpy.s(69)
+pushax (pushax.o):
+    memcpy.o                  memcpy.s(69)
+sp (zeropage.o):
+    incsp2.o                  runtime/incsp2.s(8)
+    crt0.o                    /Users/tu/Documents/MLProject/datasources/6502/ext/install/share/cc65/asminc/zeropage.inc(11)
+    staspidx.o                runtime/staspidx.s(9)
+    pushax.o                  runtime/pushax.s(8)
+    pusha.o                   runtime/pusha.s(8)
+    incsp1.o                  runtime/incsp1.s(8)
+    memcpy.o                  memcpy.s(10)
+staspidx (staspidx.o):
+    memcpy.o                  memcpy.s(69)
+tmp1 (zeropage.o):
+    copydata.o                common/copydata.s(9)
+    staspidx.o                runtime/staspidx.s(9)
+zerobss (zerobss.o):
+    crt0.o                    crt0.s(13)
+

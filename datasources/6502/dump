@@ -1,0 +1,53 @@
+#!/bin/bash
+set -x
+declare carg
+file=${DUMP_FILE:-6502.bin}
+USAGE="USAGE: $0 <file> [s0,l0[ s1,l1 ...]]"
+comps=( $(./6502 -l) )
+
+function fcomp
+{
+  local i
+  local c
+  for ((i=0; i<${#comps[@]}; i++))
+  do
+    c=${comps[$i]}
+    if [[ ${c%%:*} == $1 ]]
+    then
+      echo ${c##*:}
+      break
+    fi
+  done
+}
+
+if [[ ! -a $file ]]
+then
+  echo "ERROR: could not find $file"
+  echo $USAGE
+  exit -1
+fi
+
+args=( "$@" )
+for ((i=0; i<${#args[@]}; i++))
+do
+  s=$(fcomp "${args[$i]}")
+  if [[ -z $s ]]; then s="${args[$i]}"; fi
+  l=${s##*,}
+  s=${s%%,*}
+  # state vector 0 indexed cut 1 indexed
+  s=$((s+1)) 
+  if (( s > 1 )); then s=$(( (s*2)-1 )); fi
+  l=$(( ((l-1)*2)+1 ))
+  ca=$s-$((s+l))
+  if [[ -z $carg ]]; then 
+    carg="-c $ca"
+  else 
+    carg="$carg -c $ca"
+  fi
+done
+
+if [[ -z $carg ]]; then
+   ./6502 -d
+else
+   ./6502 -d | eval cut $carg
+fi

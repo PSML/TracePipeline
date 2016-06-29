@@ -1,5 +1,5 @@
 local trtotable = require '../../process/trtotable'
-local sm = require '../../models/simpleModel.lua'
+local sm = require '../../models/simpleModel'
 require 'lfs'
 
 math.randomseed( os.time() )
@@ -27,9 +27,8 @@ end
 --broken no google code page
 --Use stubs for now.
 
-local rectr, recte = trtotable.gentrtetab("../../datasources/stub_data/exp1RecCountPngs/", 0.8)
-local fortr, forte = trtotable.gentrtetab("../../datasources/stub_data/exp1ForCountPngs/", .8)
-
+local rectr, recte = trtotable.gentrtetab("../../datasources/stub_data/exp1RecCountPngs/", 0.8, true)
+local fortr, forte = trtotable.gentrtetab("../../datasources/stub_data/exp1ForCountPngs/", .8, true)
 
 --Give recursive label 1
 trtotable.tablelabel(rectr, 1)
@@ -55,7 +54,7 @@ local testSet  = trtotable.cattables(recte, forte)
 --print(#testSet) 
 
 --Generate model
-local mod = sm.buildModel(trainSet)
+local mod = sm.buildModel(trainSet, 2)
 
 sm.train(mod, trainSet)
 print(#testSet)

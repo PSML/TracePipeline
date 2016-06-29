@@ -1,0 +1,41 @@
+#!/bin/bash
+
+if [ $# -ne 4 ]; then
+  echo "USAGE: $0 [exp] [pc file] [io file] [output pdf]"
+  exit 0
+fi
+
+exp=$1
+pc=$2
+io=$3
+pdf=$4
+
+echo "${exp}pc=load('$pc');"
+echo "${exp}pcx=${exp}pc(:,1);"
+echo "${exp}pcy=${exp}pc(:,2);"
+
+echo "${exp}iox=load('$io');"
+echo "${exp}pcymax=max(${exp}pcy);"
+
+echo "f=figure(1);"
+echo "set(f,'visible','off');"
+
+echo "hold off;"
+echo "for v=1:length(${exp}iox),"
+echo "  plot([${exp}iox(v);${exp}iox(v)],[0;${exp}pcymax],'r','markersize',1);"
+echo "  hold on;"
+echo "endfor;"
+echo "plot(${exp}pcx,${exp}pcy,'b.','markersize',8);"
+
+echo "axis([0,max(${exp}pcx),0,max(${exp}pcy)]);"
+echo "ylabel('pc diff1');"
+echo "xlabel('instruction index');"
+echo "legend({'io'},'location','north');"
+echo "legend('boxon');"
+
+echo "H=113; W=9;"
+echo "set(f,'PaperOrientation','landscape');"
+echo "set(f,'PaperSize',[H,W]);"
+echo "set(f,'PaperPosition',[0,0,H,W]);"
+echo "ax=gca();"
+echo "print(f,'$pdf','-dpdf');"

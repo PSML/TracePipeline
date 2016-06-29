@@ -1,0 +1,393 @@
+\documentclass[11pt]{article}
+
+%% Comment command
+\newcommand{\comment}[1]{}
+
+\usepackage{times}
+\usepackage{alltt}
+\usepackage{hyperref}
+
+%% Page layout
+\oddsidemargin 0pt
+\evensidemargin 0pt
+\textheight 600pt
+\textwidth 469pt
+\setlength{\parindent}{0em}
+\setlength{\parskip}{1ex}
+
+
+\begin{document}
+
+\title{CS 210, Fall 2011\\
+6502 Lab \\
+Assigned: Tuesday Nov.~8, Due: Thursday Dec.~1, 1:30PM}
+
+\author{}
+\date{}
+
+
+\maketitle
+
+
+\section{Introduction}
+
+The year is 3020 and you are part of team that has unearthed a
+``cassette tape''
+(\url{http://en.wikipedia.org/wiki/Compact_Cassette}) that comes from
+the time before the ``global nuclear war''.  It is believed that this
+material is an important part of human history and hold's the key to
+understanding what the world was like before the
+war {\url{http://en.wikipedia.org/wiki/A_Canticle_for_Leibowitz}).
+
+Unfortunately no one know's what to do with it.  One of your
+colleagues has been able to get the contents of the tape into a
+binary file.  Your group has figured out that the file is a memory
+image from an early computer that used a device called the 6502.
+Copies of 6502 manuals have been located.  Using these manuals a
+predecessor of yours started writing an emulator so that the
+tape image could be interpreted and its operation and meaning
+determined.  Sadly your predecessor reached the maximum age
+limit and was terminated on his birthday
+(\url{http://en.wikipedia.org/wiki/Logan's_Run}) before the emulator
+could be finished.  As his apprentice the work has fallen on you.
+You have been promised that if you can accomplish this task before
+your birthday, in three weeks, your mandatory termination will be
+waived.
+
+Good Luck and as they say you life depends on it! 
+
+
+\section{How to Work on the Lab}
+
+YOU MAY WORK IN GROUPS OF TWO ON THIS ASSIGNMENT.
+
+Download the file \\
+\begin{center}
+{\small
+\bf
+\url{http://www.cs.bu.edu/fac/jappavoo/Resources/210/pa5/handout.tar}
+}
+\end{center}
+
+Start by copying \texttt{handout.tar} to a protected directory
+in which you plan to do your work.  Then give the command:
+\verb@tar xvf handout.tar@.  This will cause a number of files
+to be unpacked into a directory called handout.  You will be
+submitting a tar file of your updated version of this directory when you are done.
+
+Your goal will be to create a program called '6502' that implements a
+simple emulator for a 6502 based computer that is invoked as follows:
+\begin{center}
+\begin{verbatim}
+./6502 <input.img> <output.img> [count]
+\end{verbatim}
+\end{center}
+The program reads in the file specified by the 'input.img' argument as
+the initial image of its memory and then executes based on that
+memory image.  When it stops it will dump its current memory into an
+output file specified by the 'output.img'.  Optionally you should be
+able to specify a count of instructions that the emulator should
+execute and then quit.  If it is not specified then the emulator should
+execute until a 'BRK' instruction is encountered.    You are given the
+basic infrastructure of the emulator that you will need to complete it
+inorder to get the provided memory image files working.  
+
+The first thing you should do is update the loop.c file with your team
+information.  After this you should poke around the code and get a
+feeling for how the basic emulator infrastructure works.  See the
+hints section below for an overview of the emulator and its design.
+Then work on getting the phases as discussed in the evaluation section
+completed.  Note after the 'Compile' phase you will need to start
+using the 6502 documentation provide in the doc directory to
+implement the actual functioning of the emulator.
+
+
+\section{Evaluation}
+
+You will be evaluated on the following 5 stages.  The makefile has a
+target for each stage that will test your emulator to see if it passes
+the stage.  You can use these make targets to see if you have gotten
+things right. For each target you will either see it print out PASS or
+FAIL.
+
+The stages are described below:
+
+\begin{enumerate}
+\item {\bf Compiling (10 Credits): 'make compile'}: Get the emulator to
+  compile without any warnings.  In other words when you run make you
+  should obtain an executable file named 6502.  
+
+\item{\bf Memory Copy (40 Credits): 'make memcpy')}: Get your emulator
+  to correctly execute the memcpy.img file provided.  You will find in
+  the apps directory test memory images along with the 'unknown' image
+  (unknown.img) that you are ultimately trying to get working.  One of
+  the test images is a simple image that contains a program that
+  copies a string in memory from one location to another.  The 6502
+  source assembly used to create this image is in apps/memcpy.s along
+  with a simple 6502 assembler (p65) that is used to create the image
+  file from an assembly file ('memcpy.s' file).  To get the memcpy image
+  working you will need to get your main loop working and then
+  implement the necessary functionality for the instructions used by
+  the memcpy.s program.  To test the emulator on the memcpy.img file
+  by hand use the following command:  
+\begin{center}
+\begin{verbatim}
+  ./6502 apps/memcpy.img out.img
+\end{verbatim}
+\end{center}
+  To poke around the image files use the provided {\bf ./img -h} image
+  command. 
+
+\item{\bf Console Copy (50 Credits): 'make concpy')}: Get your
+  emulator to correctly execute the concpy.img file provided.  To get
+  this image file working you will need to complete hooking up the io
+  support in the emulator.  The emulator has built-in infrastructure
+  for a simple console device (console.[ch]) that allows characters to
+  be read in from the keyboard and characters to be written to the
+  screen.  To accomplish this the emulator supports the idea of memory
+  mapped devices (mem.[ch]).  Where reading or writing a certain range
+  of the simulated memory will cause operations on the io devices.  To
+  get the image file working you need to complete the {\bf console\_init}
+  routine (which main invokes) to correctly map the console to the
+  simulated address defined as {\bf CONSOLE\_ADDR} in console.h.
+
+\item{\bf Unknown 1 (100 Credits): 'make unknown1')}: You are now
+  ready to start working on the unknown image.  The first test will
+  send the image a simple command to see that you have been able to
+  get the image started up.  You may find it useful to use the
+  provided {\bf ./img} command to dump parts of the image file.  In
+  particular you can use it to dump the reset vector to determine
+  where in the image file the opcodes are located.  You can then dump
+  the opcodes using the same command. You may also find it useful to
+  use one of the online 6502 disassemblers to get a dump of the actual
+  6502 assembly code that the unknown image file contains.  GOOD LUCK
+  AND HAVE FUN!
+
+\item{\bf Unknown 2 (BONUS Credits): 'make unknown2')}:
+  Congratulations!  If you have gotten this far you now know what the
+  program in the unknown image is.  The unknown2 target will test more of its
+  functionality thus requiring you to implement more instructions in
+  the emulator to pass this stage.
+\end{enumerate}
+
+\section{Handin Instructions}
+
+\begin{quote}
+
+\bf Create a tar file of your emulator directory called 6502.tar and
+then use gsubmit to submit your solution.  If you have any questions 
+about how to create the tar file speak with the TF.
+\end{quote}
+
+Before submitting ensure that your solution behaves as expected on  \emph{csa2.bu.edu} 
+machine as this is where we will grade you solution.  
+
+
+\section{Hints}
+
+In this section we provide you with some background about the emulator
+and some general hints for this assignment.  But perhaps the most
+important of all is that this assignment requires you to explore the
+problem using the knowledge you have learnt in this class.  There is
+no prescribed cookie-cutter solution you must be creative and
+inquisitive.
+
+\subsection{Emulator}
+
+An emulator is a program that is designed to mimic the behaviour of a
+an entire computer system.  In our case we are trying to construct a
+program that emulates a simple computer system that is based on a cpu
+called the MOS 6502 (which was used by several early home
+micro-computers such as the KIM-1, Apple I and II, PET, Vic-20, Commodore64 and
+others).  Along with the CPU our emulator needs to implement the
+memory contents and I/O capabilities of the simple computer.  Memory
+can be easily emulated by an array that is indexed by the simulated
+addresses.  I/O devices are generally more complicated
+to emulate but we take a very simple approach to I/O that is discussed
+in the next sub-subsection. 
+
+In machine.h you will find the definition of the emulator's state.  It
+defines a machine structure that contains the memory array along with the
+CPU state.  The cpu state is define as a structure that contains the
+internal state used to implement the functioning of the cpu along with
+the registers that the 6502 programs can manipulate
+through the 6502 instructions.   The 6502 is an 8 bit microprocessor with a
+16 bit address bus.  This means that all its data registers are 8 bits
+and its memory size is $2^{16}$ bytes big.  As such
+addresses are 2 bytes and data values are 1 byte.  The machine.h file
+contains typedefs for byte and address.   All of the cpu and memory state are
+defined using these two types.   
+
+The basic idea of the emulator is to implement the CPU's behaviour by
+implementing a loop that: fetches, decodes, and executes instructions
+from the simulated memory.  Each instruction should create a change in
+the simulated machine state, either the simulated memory or simulated
+cpu state.  You will need to complete the definition
+of this loop in loop.c.  To do this you will find that the functions
+that implement fetch, decode and execute already exist but you must
+structure their invocation in loop.c.  While these functions exist the
+actual implementation of the 6502 instructions are not complete and
+the majority of your work will be to correctly implement the 6502
+instructions that are needed by the memory images.  
+
+The loop function is invoked by main.  In main the processor state and
+memory is initialized so that the simulated 6502 can begin execution at
+the point of reset.  As per the manual when the 6502 is powered on it
+follows a reset sequence that causes it to initialize the Program
+Counter (pc) register to the
+value stored at a specific location in memory called the reset
+vector.  The machine.h file documents this location along with the other vector
+locations.  The reset vector specifically is located at $0xFFFC$.  The
+logic invoked in main prior to loop will load the input memory image
+in (as specified as the first argument to the program) and loads
+the pc with the address located at $0xFFFC$ and initialized all other
+registers as per the manual's specification.  From that point on the
+loop function controls the operation of the emulator.  You may use the
+./img command provide to dump the value of a memory images reset
+vector location (./img restvec $<$file.img$>$) or you can set it with
+(./img resetvec $<$file.img$>$ 0xHHLL) where HH is the high byte of the
+address and LL is the low byte of the address that you want to pc to
+be loaded with by the reset sequence.  Be sure you know what you are
+doing if you change the resetvec of the provided images.
+
+The fetch.c file defines a fetch function that you should not need to
+modify.  The fetch function loads an internal
+register called the instruction register ('ir') with the byte located
+at the address stored in the pc.  All opcodes for the 6502 are defined
+by a single byte.  Next the fetch function
+retrieves the necessary operands for the specified opcode.  To do this
+it consults a table that describes all the opcodes (OPCodeTable). The
+tables structure is described in instruction.h and initialized in
+instruction.c.  
+
+Each entry of the OPCodeTable gives the details for how to interpret
+each opcode.  This includes the addressing mode and a pointer to a
+function which implements the actual behaviour of the opcode (the
+instruction function). The 6502 supports 16 address modes described in
+the manuals.  The address mode describes how to interpret the operand
+bytes (eg. are they an immediate constant, are they an address which
+contains the actual operand etc.).  The instruction.c as provided contains empty
+functions for the address modes and instruction functions.  The Opcode
+table has be setup so that these empty functions will automatically be
+invoked by the fetch, decode, and execute functions as
+discussed below.  Your major effort will be to implement the details
+of the address mode functions and the instruction functions that are
+in instrument.c.  BE WARNED DO NOT BLINDLY START IMPLEMENTING
+THEM.  You should do this as an iterative process.  All the default
+addressing and instruction functions will print out a message to
+standard error and
+terminate the emulator if they are invoked.  This means that once you
+structure the loop function correctly you can start executing the
+emulator with a memory image and see what functions get triggered and
+need implementing to get the memory imaged processed. 
+
+The decode.c file contains a decode function that again you should not need
+to modify.  The decode function forms the next stage
+of processing of an opcode.  The decode function uses the current
+state of the cpu and the OPCodeTable to load internal state of the
+CPU with the information to conduct the execute step.
+
+The execute.c file contains an execute function that you also should not
+need to modify.  The execute function uses the state of
+the cpu, as setup by the fetch and decode functions.  The execute
+function invokes the right instruction function in instruction.c
+to actually carry out the operation of the current instruction.  The
+fetch function returns the return code from the instruction function
+back to the invoking function.  
+
+Again your loop function should use the fetch, decode and execute
+functions to implement the behaviour of the cpu.  You will likely want
+to return out of the loop if any of these functions returns a value
+less than 0.  This will ensure that if any of the address mode
+functions or instruction functions return a failure your emulator will
+quit.  In particular you will want to make sure that when a BRK
+instruction is executed the emulator will halt.  To do this ensure
+that the BRK implementation returns a negative value back and that the
+loop exits based on this return code. 
+
+\subsubsection{IO}
+
+In general emulating IO devices can be very complicated.  In our case
+the emulator already has support for a simple model for interacting
+with IO devices.  In particular it supports Memory Mapped IO.  What
+this means is that an IO device can take over one or more of the
+simulated memory addresses.  When a program being executed by the
+emulator reads or writes these address they will be operating the
+device mapped to those addresses .  As such if the program are written
+to operate the devices by reading and writing the appropriate memory
+locations the IO will occur as intend.  In our case the memory images
+that do IO expect that when they write a byte to address {\bf 0xFF00,
+  CONSOLE\_ADDR in console.h} this will cause the byte to be written
+to the output device (eg. screen).  In this way if they want to write
+an ascii string to the screen they simply write a sequence of ascii
+byte values to the ``memory mapped'' console address.  Similarly the
+programs in the memory images expect that if they read from the same
+address they will cause the emulator to read a character from the input
+device (eg. keyboard). The read will not return until a character is
+read.  In this way the programs can read data from the user.
+
+All of the IO infrastructure is provided for you but you must read the
+code and figure out how to complete the initialization so that the
+console code is mapped to the correct address. 
+
+When implementing the behaviour of the instruction functions you will
+want to use the provided inst\_load and inst\_store functions to ensure
+that the memory mapped device infrastructure is triggered on all
+memory operations.  These routines check to see if the addresses being
+read or written are to any memory mapped addresses and if so cause
+the appropriate device specific functions to be invoked.
+
+\subsection{Additional Info}
+\begin{itemize}
+\item Study machine.h, loop.c, and instruction.[ch] you will be
+  spending a lot of time on them.
+\item You will want to figure out how to use the cpu.dbb and cpu.abr fields correctly.
+\item inst\_load, inst\_store routines in instruction.c should be used
+  when implementing reads or writes of the emulated memory in the 
+  instruction functions to ensure that the memory mapped IO will work
+  correctly.  
+\item You may find it useful to
+  run the emulator using the images by hand so that you can interact
+  with it. You can do this by running the emulator directly.  For
+  example to directly run the emulator with the unknown image you
+  would issue the following command:
+  \begin{center}
+   \begin{verbatim}
+    ./6502 apps/unknown.img myout.img 2> mytrace
+   \end{verbatim}
+  \end{center}
+  This will run your emulator (6502) in the current directory on the
+  unknown image file in the apps directory such that the final output
+  memory image will be place in a file called myout.img in the current
+  directory and any output written by the emulator to standard
+  error will be sent to the file mytrace in the current
+  directory.  If you are unsure about what mytrace is and how to use
+  it ask the TF.
+\item Work incrementally. 
+\item Get comfortable locating and interpreting the information in the
+  manuals.
+\item Be sure to read the manual sections on how the 6502 zero-page and stack 
+  work. 
+\item To get the unknown image file working you will need to get the
+  JSR and RTS instructions working.  These routine use the stack to
+  implement subroutines.  You will want to read the section in the
+  programmers manual carefully to get these right.  You will also want
+  to trace and test the functioning of these carefully.  The inst\_push
+  and inst\_pop routines located in instruction.h will come in very
+  handy.
+\item We have provide an img command that can be used to manipulate
+  and dump the image files.  You can use this to poke around the image
+  files. Issue './img -h' to learn how to use it.
+\item In the apps directory is a simple 6502 assembler that you can
+  use to create your own image files that contain opcode sequences
+  that you want to test.  If you do so don't forget to set the
+  reset vector of your new image to point at where ever you put your
+  instruction sequence.
+\end{itemize}
+\end{document}
+
+
+
+
+
+

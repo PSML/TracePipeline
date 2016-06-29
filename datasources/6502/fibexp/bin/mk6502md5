@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ $# -ne 1 ] && [ $# -ne 3 ] && [ $# -ne 2 ]; then
+  echo "USAGE: $0 [trace file] [start sv] [end sv]"
+  echo "       If [start sv] and [end sv] not specified, the entire trace is processed."
+  echo "       $0 [idx file] [diff1 md5 file]"
+  exit 0
+fi
+
+trace=$1
+s=$2; e=$3
+block=65544
+
+if [ $# -eq 1 ]; then
+  ~/6502/fibexp/bin/mkmd5 $trace $block
+elif [ $# -eq 3 ]; then
+  ~/6502/fibexp/bin/mkmd5 $trace $block $s $e
+else
+  idx=$1
+  md5=$2
+  cat $idx | while read svnum val; do
+    grep "^$svnum " $md5
+  done
+fi

@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -ne 6 ] && [ $# -ne 8 ]; then
+  echo "USAGE: $0 [exp] [addr] [num bytes] [diff1 trace file] [initial sv file] [output file] [start sv] [end sv]"
+  echo "       If [start sv] and [end sv] not specified, the entire trace is processed."
+  exit 0
+fi
+
+exp=$1
+addr=$2
+bytes=$3
+trace=$4
+initsv=$5
+out=$6
+s=0; e=0
+
+if [ $# -eq 8 ]; then
+  s=$7; e=$8
+fi
+
+~/6502/fibexp/bin/filter -o $out -s $s -e $e -t mask -m addr -a $addr -b $bytes $trace $initsv > $out.idx 2> $out.info
+
+echo "Created: $out | $out.idx | $out.info"
