@@ -1,24 +1,21 @@
-local stat = require '../../process/stat'
-local csvtonn = require '../../process/csvtonn'
 local models = require '../../models/models'
-local trtotable = require '../../process/trtotable'
-local tabletonn = require '../../process/tabletonn'
+local dx = require '../../process/dataxforms'
 local lfs = require 'lfs'
 
 if not (lfs.attributes("data", 'mode') == 'directory') then
    lfs.mkdir("data")
 end
 
-local inctr, incte = trtotable.gentrtetab("../../datasources/stub_data/exp3IncPngs/", 0.8, false)
+local inctr, incte = dx.gentrtetab("../../datasources/stub_data/exp3IncPngs/", 0.8, false)
 
 --Use filenames to provide labels
-inctr = trtotable.filenametolabel(inctr)
-incte = trtotable.filenametolabel(incte)
+inctr = dx.filenametolabel(inctr)
+incte = dx.filenametolabel(incte)
 
 --convert to tensor
 --for k,v in pairs(inctr) do print(k) end
-train = tabletonn.tabtonn(inctr)
-test = tabletonn.tabtonn(incte)
+train = dx.tabtonn(inctr)
+test = dx.tabtonn(incte)
 
 local opt = models.get_opt()
 print(opt)

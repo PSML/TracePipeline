@@ -1,24 +1,21 @@
-local stat = require '../../process/stat'
-local csvtonn = require '../../process/csvtonn'
-local models = require '../../models/models'
-local trtotable = require '../../process/trtotable'
-local tabletonn = require '../../process/tabletonn'
+local dx = require '../../process/dataxforms'
 local lfs = require 'lfs'
 local sm = require '../../models/simpleModel'
+
 if not (lfs.attributes("data", 'mode') == 'directory') then
    lfs.mkdir("data")
 end
 
-local inctr, incte = trtotable.gentrtetab("../../datasources/stub_data/exp3IncPngs/", 0.8, true)
+local inctr, incte = dx.gentrtetab("../../datasources/stub_data/exp3IncPngs/", 0.8, true)
 
 local num_classes = 9
 --Use filenames to provide labels
-inctr = trtotable.filenametolabel(inctr)
-incte = trtotable.filenametolabel(incte)
+inctr = dx.filenametolabel(inctr)
+incte = dx.filenametolabel(incte)
 
 --todo incorporate this correctly
-inctr = tabletonn.addsize(inctr)
-incte = tabletonn.addsize(incte)
+inctr = dx.addsize(inctr)
+incte = dx.addsize(incte)
 
 
 local mod = sm.buildModel(inctr, num_classes)

@@ -6,7 +6,7 @@ Backup files.
 
 #Dir for expanded bmps
 
-
+datasources/*
 
 bmps
 *.bmp

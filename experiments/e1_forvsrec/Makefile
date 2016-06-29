@@ -43,4 +43,4 @@ recCount.s: recCount.c
 	$(CC) -D START=${START} -D MAX=${MAX} -D__6502__ -t none -O -Oi --cpu 6502 $< 
 
 clean:
-	-rm -rf *~ *.o *.map *.img *.lst *.out memcpy.s memcpy backup images *.s traces
+	-rm -rf *~ *.o *.map *.img *.lst *.out memcpy.s memcpy backup images *.s traces tmp
