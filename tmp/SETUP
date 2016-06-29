@@ -1,0 +1,5 @@
+MLPTOP=$(pwd)
+SIXTOP="$MLPTOP"/datasources/6502
+
+export MLPTOP
+export SIXTOP
