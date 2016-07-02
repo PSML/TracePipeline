@@ -7,11 +7,6 @@ function stat.standardize_data(t)
 
    local t_mean = t.data:mean(1)
    local t_std = t.data:std(1)
-
---   local rer = t.data - t_mean:expand(geo[1],geo[2])
---   local asw = torch.cdiv(rer, t_std:expand(geo[1], geo[2]))
---   print(asw:size())
---   os.exit()
    t.data = torch.cdiv( (t.data - t_mean:expand(geo[1],geo[2])), t_std:expand(geo[1], geo[2]))
 end
 

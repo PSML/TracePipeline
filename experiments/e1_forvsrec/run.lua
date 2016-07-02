@@ -1,20 +1,15 @@
 --local trtotable = require '../../process/trtotable'
 local dx = require '../../process/dataxforms.lua'
 local sm = require '../../models/simpleModel'
-require 'lfs'
-
-math.randomseed( os.time() )
-
-local sf = string.format
+local lfs = require 'lfs'
 local ex = os.execute
 
---Clean up past runs.
+math.randomseed(os.time())
 ex("make clean")
 
 --Generate some images.
-for i=1,2 do
+for i=1,100 do
    local start = math.random(255)
---   ex(sf("echo make START=%d MAX=%d", start, start+10))
    ex("make START=" .. start .. " MAX=" .. start+10 )
 end
 
@@ -28,6 +23,7 @@ end
 --broken no google code page
 --Use stubs for now.
 
+--Generate training and testing tables from bmps.
 local rectr, recte = dx.gentrtetab("../../datasources/stub_data/exp1RecCountPngs/", 0.8, true)
 local fortr, forte = dx.gentrtetab("../../datasources/stub_data/exp1ForCountPngs/", .8, true)
 
@@ -38,35 +34,14 @@ dx.tablelabel(recte, 1)
 dx.tablelabel(fortr, 2)
 dx.tablelabel(forte, 2)
 
---print(#rectr)
---print(#recte)
---print(#fortr)
---print(#forte)
-
-
---Combine 4 tables into 2.
+--Combine train and test tables for 2 expts.
 local trainSet = dx.cattables(rectr, fortr)
 local testSet  = dx.cattables(recte, forte)
-
---print(#rectr + #fortr)
---print(#recte + #forte)
-
---print(#trainSet)
---print(#testSet) 
 
 --Generate model
 local mod = sm.buildModel(trainSet, 2)
 
-
+--Run
 sm.train(mod, trainSet)
 sm.test(mod, testSet)
 
-
-
---[[
-   print(file)
-   local print(string.find(file, "%d+_"))
-   print(string.find(file, "_%d+"))
-
-end
---]]

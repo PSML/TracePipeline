@@ -1,6 +1,16 @@
+local csvigo = require 'csvigo'
 local dx = {} 
 
 math.randomseed(os.time())
+
+function dx.csvtotensor(p, header)
+   t = csvigo.load({path = p, mode="raw"})
+   if header then
+      table.remove(t, 1)
+   end
+   return torch.Tensor(t)
+end
+   
 
 function dx.shuffleTensor(t)
    --This doesn't return the same storage
@@ -24,7 +34,6 @@ function dx.splitTrainTest(t, p)
    return train, test
 end
 
-
 function dx.splitDataLabels(t, feat_st, num_feat, lab_st, num_lab)
    --Assumes features contiguous, labels contiguous.
    local new_t = {}
@@ -35,7 +44,6 @@ function dx.splitDataLabels(t, feat_st, num_feat, lab_st, num_lab)
    end
    return new_t
 end
-
 
 function dx.prepForNN(t, num_classes)
    --class is a userdata not number

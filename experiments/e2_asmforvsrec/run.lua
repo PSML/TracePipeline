@@ -7,7 +7,6 @@ if not (lfs.attributes("data", 'mode') == 'directory') then
 end
 
 local inctr, incte = dx.gentrtetab("../../datasources/stub_data/exp2IncPngs/", 0.8, true)
-
 local num_classes = 9
 
 --Use filenames to provide labels

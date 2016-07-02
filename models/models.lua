@@ -56,9 +56,10 @@ end
 --
 
 function init_model()
+--todo: this
 classes = {'0', '1'}
 
-classes = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
+--classes = {'1', '2', '3', '4', '5', '6', '7', '8', '9'}
 -- geometry: width and height of input images
 
 
@@ -91,11 +92,11 @@ if opt.network == '' then
       -- regular 2-layer MLP
       ------------------------------------------------------------
       
-      model:add(nn.Reshape(21))
-      model:add(nn.Linear(21, 512))
+      model:add(nn.Reshape(110))
+      model:add(nn.Linear(110, 512))
       model:add(nn.Tanh())
---      model:add(nn.Linear(1024,512))
---      model:add(nn.ReLU())
+      model:add(nn.Linear(512,512))
+      model:add(nn.ReLU())
       model:add(nn.Linear(512, #classes))
       model:add(nn.Sigmoid())
       ------------------------------------------------------------
@@ -163,7 +164,7 @@ function train_mod(dataset, inputdim)
       if inputdim == 2 then
 	 inputs = torch.Tensor(opt.batchSize,1,geometry[1],geometry[2])
       else
-	 inputs = torch.Tensor(opt.batchSize,num_features)
+	 inputs = torch.Tensor(opt.batchSize,dataset.data:size(2))
       end
 
       local targets = torch.Tensor(opt.batchSize)
@@ -232,8 +233,6 @@ function train_mod(dataset, inputdim)
 	 local num_class_o = confusion.mat[2][1] + confusion.mat[2][2]
 	 --Avoid div by 0 possibility.
 	 
-	 if epoch == 20 then os.exit() end
-
 	 if num_class_z ~= 0 and num_class_o ~= 0 then
 	    --Might already be computed. 
 	    local acc_c1 = confusion.mat[1][1] / ( confusion.mat[1][1] + confusion.mat[1][2] ) 
@@ -332,7 +331,7 @@ function test_mod(dataset, inputdim)
       if inputdim == 2 then
 	 inputs = torch.Tensor(opt.batchSize,1,geometry[1],geometry[2])
       else
-	 inputs = torch.Tensor(opt.batchSize,1,num_features)
+	 inputs = torch.Tensor(opt.batchSize,1,dataset.data:size(2))
       end
       local targets = torch.Tensor(opt.batchSize)
       local k = 1

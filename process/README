@@ -1,0 +1,6 @@
+There are multiple input sources: bmp, ascii, table, tensor, csv.
+There are two main sources for nn input: table and tensor. 
+
+Many models require your datasets to have the following 2 properties:
+dataSet[i] = { x_i, y_i }; where x_iis the ith training example and y_i is the corresponding label.
+dataSet.size() = number type, count of input output examples. 
