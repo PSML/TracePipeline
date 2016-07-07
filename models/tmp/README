@@ -1,5 +1,0 @@
-Borrowing heavily from:
-https://github.com/torch/demos/blob/master/train-a-digit-classifier/train-on-mnist.lua
-
-Trains a linear classifier, a mlp net and a convolutional net on 6502 traces. 
-
