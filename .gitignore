@@ -11,6 +11,10 @@ datasources/*
 bmps
 *.bmp
 *.png
+
+data
+*.csv
+
 myscript.sh.*
 
 #process
@@ -21,9 +25,10 @@ outputTrainTable
 the_mlp_net
 trained_mlp_net
 
-
 exp1ForCountPngs
 exp1RecCountPngs
 
 exp2IncPngs/
 exp3IncPngs/
+
+*.ipynb_checkpoints
