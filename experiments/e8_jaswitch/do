@@ -1,0 +1,27 @@
+#!/bin/bash
+
+ALPHABET="E:70 P:15 V:10 Z:5"
+SIZES="1000 500 200 100 50 40 20 10"
+#SIZES=1000
+
+for i in $SIZES
+do
+  NUM=$i
+  INPUTFILE="${ALPHABET// /,}.${NUM}.input"
+  if [[ ! -a $INPUTFILE ]];then
+    ./genstring $NUM $ALPHABET >> $INPUTFILE
+    echo "Q" >> $INPUTFILE 
+  fi
+
+  numE=$(grep E $INPUTFILE | wc -l)
+  numP=$(grep P $INPUTFILE | wc -l)
+  numV=$(grep V $INPUTFILE | wc -l)
+  numZ=$(grep Z $INPUTFILE | wc -l)
+
+  echo "E: $numE " $(echo "scale=3; $numE/$NUM * 100" | bc) > ${INPUTFILE}.info
+  echo "P: $numP " $(echo "scale=3; $numP/$NUM * 100" | bc) >> ${INPUTFILE}.info
+  echo "V: $numV " $(echo "scale=3; $numV/$NUM * 100" | bc) >> ${INPUTFILE}.info
+  echo "Z: $numZ " $(echo "scale=3; $numZ/$NUM * 100" | bc) >> ${INPUTFILE}.info
+done
+
+

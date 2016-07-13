@@ -1,0 +1,56 @@
+#!/bin/bash
+#set -x
+declare -a percent
+declare -a symbol
+declare -i i=0
+declare -i sum=0
+
+USAGE="$0 <LENGTH> <SYM0:PERCENT0> <SYM1:PERCENT1> ..."
+
+if [[ $# < 2 ]]; then
+  echo "$USAGE"
+  exit -1
+fi
+
+NUM=$1
+shift
+
+ranurl="https://www.random.org/integers/?num=${NUM}&min=1&max=100&col=1&base=10&format=plain&rnd=new"
+
+map=$(
+for sd in $@
+do
+  echo $sd
+done | sort -t':' -k 2 -n -r
+)
+
+for  sd in $map
+do
+  percent[$i]=${sd##*:}
+  symbol[$i]=${sd%%:*}
+#  echo ${i}: ${symbol[$i]} ${percent[$i]}
+  (( sum = sum + ${percent[$i]} ))
+  ((i++))
+done
+
+if (( sum != 100 ))
+then
+   echo "$USAGE"
+   echo "ERROR: distribution does not sum ($sum) to 100"
+   exit -1
+fi
+
+num=$i
+
+curl -s -q "$ranurl" | while read val
+do
+   ((t=0))	
+   for ((i=0; i<num; i++))
+   do
+     ((t+=${percent[$i]}))
+#      echo $i ${percent[$i]} ${symbol[$i]}
+       (($val <= t )) && echo  ${symbol[$i]} && break
+   done
+done
+
+
