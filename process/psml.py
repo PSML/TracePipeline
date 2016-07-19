@@ -1,5 +1,4 @@
 '''This contains functions for operating on state vectors.'''
-
 import sys
 import math
 import numpy as np
@@ -8,10 +7,10 @@ from PIL import Image
 #PC + Acc + X + Y + SP + SR = 2 + 1 + 1 + 1 + 1 + 1 = 7 bytes of regs
 #2^16 bytes mem
 #65,543 bytes total = 524,344 bits
-sz_st_vec_bytes = 7+1 + 2**16 #This +1 is due to me not understanding the state.
-#sz_st_vec_bits = sz_st_vec_bytes * 8
+sz_st_vec_bytes = 8 + 2**16 
 
 def path_to_svarr(path):
+    #Takes a path to a trace and returns a np array.
     trc = np.fromfile(path, dtype='uint8')
     num_states = trc.size / (sz_st_vec_bytes)
 
@@ -21,23 +20,51 @@ def path_to_svarr(path):
 
     return np.reshape(trc, (int(num_states), -1))
 
-def paths_to_tracearr(paths):
+def sv_paths_to_tracearr(paths):
+    #Takes a list of paths and turns into a 3d numpy array.
+    #Eats lots of memory with sparse svs.
     return np.stack([ path_to_svarr(path) for path in paths ])
 
 def show_arr(arr, grey=245):
+    #Visual representation of trace. Careful w/ bit vs byte.
     return Image.fromarray(grey * np.uint8(arr))
 
-'''
-def dir_to_arr_labels(path, lab):
-    #All of the traces.
-    image_list = []
-    #Training labels.
-    labels = []
-    files = !ls {path}
-    #Get images as 2d arrays as well as labels.
-    for filename in files:
-        im=misc.imread(path + filename, flatten=True)
-        image_list.append(np.array(im)/255)
-        labels.append(lab)
-    return np.array(image_list), np.array(labels)
-'''
+def excited_cols(trc):
+    #Takes a trace, returns excited cols. Intentionally vague,
+    #Works with bit or byte representation.
+    return (trc!=trc[0,:]).any(0)
+
+def paths_to_excited_mask(paths):
+    #Takes a list of paths to traces. Returns the excited bit mask
+    #across all traces in list.
+    return np.array( [excited_cols(path_to_svarr(i)) for i in paths] ).any(0)
+
+def non_zero_cols(trc):
+    return np.all(trc, axis=0)
+
+def gen_non_zero_mask(trc_list):
+    return np.array( [non_zero_cols(path_to_svarr(i)) for i in trc_list] ).any(0)
+
+#Combine these into 1 fn combine gen fns
+def path_to_svmasked(path, mask):
+    #Simply masks out path.
+    return path_to_svarr(path)[:,mask]
+
+def paths_to_svmasked(paths, mask):
+    #List of paths and mask to 3d array of masked traces
+    return np.array( [ path_to_svmasked(i, mask) for i in paths ] )
+
+def mask_svarr(trcs, mask):
+    #Turns 3d array of traces to 3d array selected with mask.
+    return np.array( [ i[:,mask] for i in trcs ] )
+
+def svarr_to_excited_mask(trcs):
+    #3d array to excited mask
+    return np.array( [ excited_cols(i) for i in trcs ] ).any(0)
+
+def byte_to_bit_sv(trc):
+    #Converts byte traces to bit traces.
+    #Likely need to remask after running.
+    return np.unpackbits(trc, axis=2)
+
+
