@@ -30,9 +30,29 @@ def show_arr(arr, grey=245):
     return Image.fromarray(grey * np.uint8(arr))
 
 def excited_cols(trc):
-    #Takes a trace, returns excited cols. Intentionally vague,
+    #Takes a trace, returns excited cols.
     #Works with bit or byte representation.
     return (trc!=trc[0,:]).any(0)
+
+def paths_to_datadep_mask(paths):
+    #Takes a trace, returns cols that vary accross the dataset.
+    #The reason this doesn't just use sum(axis=0) is because
+    #It is assumed only ~1 trace can fit in mem at a given time.
+    #Kludge
+    sum = np.zeros(path_to_svarr(paths[0]).shape)
+    for i in paths:
+        sum += path_to_svarr(i)
+    #Mask out only the differences between traces.
+    return ((sum > 0) & (sum < len(paths))).any(0)
+
+def paths_to_zero_cols(paths):
+    trc_sum = np.zeros(path_to_svarr(paths[0]).shape).astype('uint64')
+    for i in paths:
+        trc_sum += path_to_svarr(i).sum(0)
+
+    #Mask out only the differences between traces.
+    return (sum > 0) & (sum < len(paths))
+    
 
 def paths_to_excited_mask(paths):
     #Takes a list of paths to traces. Returns the excited bit mask
