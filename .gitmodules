@@ -10,9 +10,6 @@
 [submodule "datasources/6502"]
 	path = datasources/6502
 	url = https://github.com/PSML/6502.git
-[submodule "datasources/compress"]
-	path = datasources/compress
-	url = https://github.com/PSML/compress.git
 [submodule "datasources/asc"]
 	path = datasources/asc
 	url = git@github.com:PSML/asc.git
