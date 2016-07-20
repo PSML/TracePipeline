@@ -1,4 +1,10 @@
-'''This contains functions for operating on state vectors.'''
+"""
+This contains functions for operating on state vectors. 
+It needs restructuring.
+Note to self: how much of this could be automatically be 
+taken care of by sparse arrays?
+"""
+
 import sys
 import math
 import numpy as np
@@ -8,6 +14,15 @@ from PIL import Image
 #2^16 bytes mem
 #65,543 bytes total = 524,344 bits
 sz_st_vec_bytes = 8 + 2**16
+
+#####################Visualization######################
+
+def show_arr(arr, grey=245):
+    """Visual representation of trace. Careful w/ bit vs byte."""
+    return Image.fromarray(grey * np.uint8(arr))
+
+
+#####################Raw Trc array######################
 
 def path_to_svarr(path):
     """Takes a path to a trace and returns a np array."""
@@ -20,54 +35,57 @@ def path_to_svarr(path):
 
     return np.reshape(trc, (int(num_states), -1))
 
-def sv_paths_to_tracearr(paths):
+def paths_to_tracearr(paths):
     """Takes a list of paths and turns into a 3d numpy array.
     Eats lots of memory with sparse svs."""
     return np.stack([path_to_svarr(path) for path in paths])
 
-def show_arr(arr, grey=245):
-    """Visual representation of trace. Careful w/ bit vs byte."""
-    return Image.fromarray(grey * np.uint8(arr))
+
+#####################Excited######################
 
 def excited_cols(trc):
     """Takes a trace, returns excited cols.
     Works with bit or byte representation."""
     return (trc != trc[0, :]).any(0)
 
-def paths_to_datadep_mask(trcs):
-    """Takes a bit trace, returns cols that vary accross the dataset.
-    The reason this doesn't just use sum(axis=0) is because
-    It is assumed only ~1 trace can fit in mem at a given time."""
-    mask = np.zeros(path_to_svarr(trcs[0]).shape[1])
-    for i in trcs:
-        mask += path_to_svarr(i)
-    #Mask out only the differences between traces.
-    return ((mask > 0) & (mask < len(trcs))).any(0)
-
+def svarr_to_excited_mask(trcs):
+    """3d array to excited mask."""
+    return np.array([excited_cols(i) for i in trcs]).any(0)
 
 def paths_to_excited_mask(paths):
     """Takes a list of paths to traces. Returns the excited bit mask
     across all traces in list."""
     return np.array([excited_cols(path_to_svarr(i)) for i in paths]).any(0)
 
-def paths_to_zero_cols(paths):
-    """Find cols that are all zero across all traces."""
-    trc_sum = np.zeros(path_to_svarr(paths[0]).shape).astype('uint64')
-    for i in paths:
-        trc_sum += path_to_svarr(i).sum(0)
 
+#####################DataDep#####################
+
+def svarr_to_datadep_mask(trcs):
+    """Takes a bit trace, returns cols that vary accross the dataset.
+    The reason this doesn't just use sum(axis=0) is because
+    It is assumed only ~1 trace can fit in mem at a given time."""
+    mask = np.zeros(trcs[0].shape)
+    for i in trcs:
+        mask += i
     #Mask out only the differences between traces.
-    return (trc_sum > 0) & (trc_sum < len(paths))
+    return ((mask > 0) & (mask < len(trcs))).any(0)
 
-def non_zero_cols(trc):
-    """Returns all non zero cols."""
-    return np.all(trc, axis=0)
 
-def gen_non_zero_mask(trc_list):
+#####################ZERO######################
+#think this is datadep
+#def paths_to_zero_cols(paths):
+#    trc_sum = np.zeros(path_to_svarr(paths[0]).shape).astype('uint64')
+#    for i in paths:
+#        trc_sum += path_to_svarr(i).sum(0)
+#    #Mask out only the differences between traces.
+#    return (trc_sum > 0) & (trc_sum < len(paths))
+
+def paths_to_zero_mask(paths):
     """Traces to zero vec."""
-    return np.array([non_zero_cols(path_to_svarr(i)) for i in trc_list]).any(0)
+    return np.array([path_to_svarr(i).any(axis=0) for i in paths]).any(0)
 
-#Combine these into 1 fn combine gen fns
+#####################Masking######################
+
 def path_to_svmasked(path, mask):
     """Simply masks out path."""
     return path_to_svarr(path)[:, mask]
@@ -80,9 +98,8 @@ def mask_svarr(trcs, mask):
     """Turns 3d array of traces to 3d array selected with mask."""
     return np.array([i[:, mask] for i in trcs])
 
-def svarr_to_excited_mask(trcs):
-    """3d array to excited mask."""
-    return np.array([excited_cols(i) for i in trcs]).any(0)
+
+#####################Bit to Byte######################
 
 def byte_to_bit_sv(trc):
     """Converts byte traces to bit traces.
