@@ -6,6 +6,8 @@ CC65BINDIR = ../../datasources/6502/ext/install/bin
 START?=0
 MAX?=10
 
+IMGDIR?='images'
+
 CC = $(CC65BINDIR)/cc65
 AS = $(CC65BINDIR)/ca65
 LD = $(CC65BINDIR)/ld65
@@ -25,9 +27,9 @@ all: $(IMGS)
 %.img: %.exe
 	[ -d 'backup' ] || mkdir backup
 	mv *.lst *.map *.s backup
-	[ -d 'images' ] || mkdir images
+	[ -d ${IMGDIR} ] || mkdir ${IMGDIR}
 	mv $* ${START}_${MAX}$@
-	mv *.img images
+	mv *.img ${IMGDIR}
 
 %.exe: %.o 
 	$(LD) -o $* -C ${BU6502CFG} $< ${BU6502LIB}  -m $*.map
@@ -43,4 +45,4 @@ recCount.s: recCount.c
 	$(CC) -D START=${START} -D MAX=${MAX} -D__6502__ -t none -O -Oi --cpu 6502 $< 
 
 clean:
-	-rm -rf *~ *.o *.map *.img *.lst *.out memcpy.s memcpy backup images *.s traces tmp
+	-rm -rf *~ *.o *.map *.img *.lst *.out memcpy.s memcpy backup ${IMGDIR} *.s traces tmp
