@@ -14,7 +14,7 @@ from PIL import Image
 #2^16 bytes mem
 #65,543 bytes total = 524,344 bits
 sz_st_vec_bytes = 8 + 2**16
-
+sz_act_bytes = 5
 #####################Visualization######################
 
 def show_arr(arr, grey=245):
@@ -24,21 +24,28 @@ def show_arr(arr, grey=245):
 
 #####################Raw Trc array######################
 
-def path_to_svarr(path):
+def path_to_svarr(path, mode='sv'):
     """Takes a path to a trace and returns a np array."""
     trc = np.fromfile(path, dtype='uint8')
-    num_states = trc.size / (sz_st_vec_bytes)
+    
+    if mode == 'sv':
+        row_sz = sz_st_vec_bytes
+    else:
+        row_sz = sz_act_bytes
 
+    num_states = trc.size / row_sz
+    #Not an integer number of states.
     if num_states != math.floor(num_states):
         print("num_states is non int!")
         sys.exit()
-
+    
     return np.reshape(trc, (int(num_states), -1))
 
-def paths_to_tracearr(paths):
+
+def paths_to_tracearr(paths, mode='sv'):
     """Takes a list of paths and turns into a 3d numpy array.
     Eats lots of memory with sparse svs."""
-    return np.stack([path_to_svarr(path) for path in paths])
+    return np.stack([path_to_svarr(path, mode) for path in paths])
 
 
 #####################Excited######################
