@@ -41,6 +41,10 @@ def path_to_svarr(path, mode='sv'):
     
     return np.reshape(trc, (int(num_states), -1))
 
+def img_to_sv(path):
+    """Takes an image, appends zeroed reg state (8 regs)."""
+    trc = np.fromfile(path, dtype='uint8')
+    return np.concatenate([np.zeros(8), trc])
 
 def paths_to_tracearr(paths, mode='sv'):
     """Takes a list of paths and turns into a 3d numpy array.
